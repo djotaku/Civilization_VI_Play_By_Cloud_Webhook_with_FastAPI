@@ -127,3 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# For this project
+civ_vi_webhook/services/matrix/matrix.conf
+/civ_vi_webhook/services/matrix/matrix.conf
+.idea/
