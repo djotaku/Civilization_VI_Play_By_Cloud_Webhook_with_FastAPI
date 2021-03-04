@@ -38,7 +38,7 @@ If you happen to already be using (or prefer) Play Your Damn Turn (PYDT), they u
 "leaderName": "the name of your civ leader (and for some of them the attribute)"
 }
 ```
-This is why I have two different endpoints, one for Play by Cloud and one for Play Your Damn Turn (PYDT). Also note that the PBC tune number is a string while the PYDT JSON is an integer.
+This is why I have two different endpoints, one for Play by Cloud and one for Play Your Damn Turn (PYDT). Also note that the PBC turn number is a string while the PYDT JSON is an integer.
 
 ## How to use this code on your own
 
