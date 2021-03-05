@@ -24,9 +24,9 @@ class MatrixBot:
         response = await client.login(password=self.config.get("password"))
         logging.info(f"Alert Matrix Bot Login response: {response}")
         logging.debug(f"Alert Matrix Bot has joined room would be: {self.config.get('room')}")
-        msg_response = await client.room_send(room_id=self.config.get('room'), message_type="m.room.message",
-                                              content={"msgtype": "m.text", "body": message})
-        logging.debug(f"Message Response: {msg_response}")
+        #msg_response = await client.room_send(room_id=self.config.get('room'), message_type="m.room.message",
+        #                                      content={"msgtype": "m.text", "body": message})
+        #logging.debug(f"Message Response: {msg_response}")
         await client.close()
 
     def main(self, message):

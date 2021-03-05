@@ -129,6 +129,7 @@ dmypy.json
 .pyre/
 
 # For this project
-civ_vi_webhook/services/matrix/matrix.conf
-/civ_vi_webhook/services/matrix/matrix.conf
+matrix.conf
+/matrix.conf
 .idea/
+/most_recent_games.json
