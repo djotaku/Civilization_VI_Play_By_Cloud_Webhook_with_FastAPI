@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 import json
 import logging
 from pydantic import BaseModel
@@ -29,7 +29,11 @@ class CivTurnInfo(BaseModel):
 
 api_matrix_bot = matrix_bot.MatrixBot()
 most_recent_games = dict()
-app = FastAPI()
+app = FastAPI(
+    title="Eric's Civilization VI Play By Cloud and PYDT Webhook server",
+    description="The server acts as an endpoint for PBC and PYDT JSON then sends it to the service you configure.",
+    version="0.1.0"
+)
 
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s- %(asctime)s - %(message)s')
 
@@ -60,8 +64,8 @@ def player_name_to_matrix_name(player_name: str) -> str:
         return player_name
 
 
-@app.post('/webhook')
-def respond(play_by_cloud_game: CivTurnInfo):
+@app.post('/webhook', status_code=status.HTTP_201_CREATED)
+def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
     """The API endpoint for Civilization's Play By Cloud JSON data.
 
     The reason for the duplication checks here are in case more than one player has the webhook enabled for all turns.
@@ -88,8 +92,8 @@ def respond(play_by_cloud_game: CivTurnInfo):
         json.dump(most_recent_games, most_recent_games_file)
 
 
-@app.post('pydt')
-def respond_pydt(pydt_game: CivTurnInfo):
+@app.post('pydt', status_code=status.HTTP_201_CREATED)
+def handle_pydt_json(pydt_game: CivTurnInfo):
     logging.debug(f'JSON from PYDT: {pydt_game}')
     game_name = pydt_game.gameName
     player_name = player_name_to_matrix_name(pydt_game.userName)
@@ -104,11 +108,10 @@ def respond_pydt(pydt_game: CivTurnInfo):
         json.dump(most_recent_games, most_recent_games_file)
 
 
-
 @app.get('/recent_games')
 def return_recent_games():
     """Returns the dictionary containing the games awaiting a turn.
 
-    In the future this endpoint may change to /outstanding_games to better reflect what it returns.
+    In the future this endpoint may change to /current_games to better reflect what it returns.
     """
     return most_recent_games
