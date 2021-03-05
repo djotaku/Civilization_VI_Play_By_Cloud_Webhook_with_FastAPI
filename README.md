@@ -54,5 +54,6 @@ for dev:
   - if you're running this way, the matrix.conf config file needs to be in the root directory - next to the server and listener bash scripts. 
   - run the server and listener scripts
   - set up Civilization VI (and, optionally PYDT) with the webhook API URL
+  - include a sample nginx config??
 if end up making a Python package:
   -the steps needed there - some of the above about be covered by the package
