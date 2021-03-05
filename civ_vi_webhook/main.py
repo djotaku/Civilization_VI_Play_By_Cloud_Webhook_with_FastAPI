@@ -26,6 +26,20 @@ class CivTurnInfo(BaseModel):
     civName: Optional[str]
     leaderName: Optional[str]
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "value1": "Eric's Barbarian Clash Game",
+                "value2": "Eric",
+                "value3": "300",
+                "gameName": "Eric's Barbarian Clash Game",
+                "userName": "Eric",
+                "round": 300,
+                "civName": "Sumeria",
+                "leaderName": "Gilgamesh"
+            }
+        }
+
 
 api_matrix_bot = matrix_bot.MatrixBot()
 most_recent_games = dict()
