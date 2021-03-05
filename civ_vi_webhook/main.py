@@ -54,6 +54,7 @@ def player_name_to_matrix_name(player_name: str) -> str:
 
 @app.post('/webhook')
 def respond(play_by_cloud_game: PlayByCloud):
+    """The API endpoint for Civilization's Play By Cloud JSON data."""
     logging.debug(f'JSON from Play By Cloud: {play_by_cloud_game}')
     game_name = play_by_cloud_game.value1
     player_name = player_name_to_matrix_name(play_by_cloud_game.value2)
@@ -77,9 +78,8 @@ def respond(play_by_cloud_game: PlayByCloud):
 
 @app.get('/recent_games')
 def return_recent_games():
+    """Returns the dictionary containing the games awaiting a turn.
+
+    In the future this endpoint may change to /outstanding_games to better reflect what it returns.
+    """
     return most_recent_games
-
-
-@app.get('/')
-def read_root():
-    return{'Hello', 'World'}
