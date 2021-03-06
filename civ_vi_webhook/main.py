@@ -106,7 +106,7 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
         json.dump(most_recent_games, most_recent_games_file)
 
 
-@app.post('pydt', status_code=status.HTTP_201_CREATED)
+@app.post('/pydt', status_code=status.HTTP_201_CREATED)
 def handle_pydt_json(pydt_game: CivTurnInfo):
     logging.debug(f'JSON from PYDT: {pydt_game}')
     game_name = pydt_game.gameName
