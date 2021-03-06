@@ -119,6 +119,7 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
 @app.post('/pydt', status_code=status.HTTP_201_CREATED)
 def handle_pydt_json(pydt_game: CivTurnInfo):
     api_logger.debug(f'JSON from PYDT: {pydt_game}')
+    print(f'JSON from PYDT: {pydt_game}game')
     game_name = pydt_game.gameName
     player_name = player_name_to_matrix_name(pydt_game.userName)
     turn_number = pydt_game.round
