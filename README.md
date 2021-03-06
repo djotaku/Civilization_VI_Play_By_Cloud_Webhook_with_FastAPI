@@ -2,17 +2,7 @@
 
 Using Python FastAPI creates a webhook endpoint for Civilization VI's Play By Cloud or [Play Your Damn Turn](https://www.playyourdamnturn.com/) Webhooks and pushes notifications to Matrix.
 
-I will accept Pull Requests to add other services: eg Discord, Telegram, Email, SMS, etc
-
-## Updates
-
-A mini dev log until I get things fully operational
-
-20210305 (Morning) - Ported /pydt route. I need to do a test tonight, but I believe everything should now be working as it was in Flask. Next up: optimizations and new ideas. 
-
-20210304 - Ported over the /webhook route and the /recent_games route. I may change /recent_games to /outstanding_games since I'm persisting the game dictionary. Some things were easier - like returning the dictionary on the recent_games route. I no longer need to jsonify it. The post was slightly more complicated because it involved making the BaseModel. That said, it does provide for a nicer, more readable interface. It also helps with FastAPI's self documentation. Having to make it just further shows that perhaps I should just unify /webhook and the /pydt endpoints that I haven't yet ported over. And yet, maybe there's something to be said for keeping them separate rather than complicate things with the two different messages. I'll have to see how I feel in the future. For now, as I said before, I'm just porting over what already works in Flask and then I will start to work on optimizations and better code. After all, the Flask app was just done in a weekend.
-
-20210303 - I have ported over much of the helper code from my Flask implementation. I haven't copied over the real main.py yet, it's just the hello world example so that I could check out functionality of uvicorn vs gunicorn. I have decided that for my first version (0.1?) I will just port the Flask implementation almost line-for-line rather than taking advantage of the benefits of FastAPI. I have a long list of changes I want to make both to take better advantage of FastAPI and just a few ideas I had on how to make the code more portable once I decided to share it on Github (and perhaps eventually make a Python Package on PyPi).
+I will accept Pull Requests to add other services: eg Discord, Telegram, Email, SMS, Mastodon, etc
 
 ## Introduction
 
@@ -46,12 +36,24 @@ This is why I have two different endpoints, one for Play by Cloud and one for Pl
 
 ## How to use this code on your own
 
-20210302 - Yes, yes...the full code isn't here yet. I originally wrote the code using Flask and this repo will be for the FastAPI rewrite. Luckily, it's very easy to translate from one to the other, so I plan to have working FastAPI code this upcoming weekend.
+For now (until I create a Python package)
+
+On a server running Nginx or Apache, go to the folder that will contain this code. Clone the git repo.
+
+Create a virtual environment:
+
+```bash
+python -m venv ./venv
+```
+
+Install the requirements:
+```python
+pip install -r requirements.txt
+```
+
 
 notes on steps for later:
 for dev:
-  - create a virtual environment 
-  - pip install -r requirements.txt
   - edit the config files with the appropriate data
   - if you're running this way, the matrix.conf config file needs to be in the root directory - next to the server and listener bash scripts. 
   - run the server and listener scripts
