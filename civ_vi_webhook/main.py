@@ -50,8 +50,13 @@ app = FastAPI(
     version="0.1.0"
 )
 
-logging.basicConfig(level=logging.DEBUG, format='%(levelname)s- api - %(asctime)s - %(message)s')
 api_logger = logging.getLogger("api server")
+api_logger.setLevel(logging.DEBUG)
+command_line_handler = logging.StreamHandler()
+command_line_handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(levelname)s- api - %(asctime)s - %(message)s')
+command_line_handler.setFormatter(formatter)
+api_logger.addHandler(command_line_handler)
 
 # ##########################################
 # This should be added to FastAPI's Startup
@@ -119,7 +124,6 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
 @app.post('/pydt', status_code=status.HTTP_201_CREATED)
 def handle_pydt_json(pydt_game: CivTurnInfo):
     api_logger.debug(f'JSON from PYDT: {pydt_game}')
-    print(f'JSON from PYDT: {pydt_game}game')
     game_name = pydt_game.gameName
     player_name = player_name_to_matrix_name(pydt_game.userName)
     turn_number = pydt_game.round

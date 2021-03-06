@@ -5,7 +5,7 @@ import json
 import logging
 from nio import AsyncClient
 
-logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(asctime)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(levelname)s - %(asctime)s - %(message)s')
 
 
 class MatrixBot:
