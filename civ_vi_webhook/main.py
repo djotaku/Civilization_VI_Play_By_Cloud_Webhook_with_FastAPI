@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 from fastapi import FastAPI, HTTPException, Query, status
 import json
@@ -63,6 +64,7 @@ try:
 except FileNotFoundError:
     api_logger.warning("Prior JSON file not found. If this is your first run, this is OK.")
 
+
 # ###############
 # End of Startup
 # ###############
@@ -95,14 +97,21 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
             api_logger.debug("Game exists, but this is not a duplicate")
             message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
             api_matrix_bot.main(message)
-            current_games[game_name] = {'player_name': player_name, 'turn_number': turn_number}
         else:
             api_logger.debug("Game exists and this is a duplicate entry.")
     else:
-        current_games[game_name] = {'player_name': player_name, 'turn_number': turn_number}
         api_logger.debug("New game.")
         message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
         api_matrix_bot.main(message)
+    turn_time = datetime.now()
+    current_games[game_name] = {'player_name': player_name,
+                                'turn_number': turn_number,
+                                'time_stamp': {'year': turn_time.year,
+                                               'month': turn_time.month,
+                                               'day': turn_time.day,
+                                               'hour': turn_time.hour,
+                                               'minute': turn_time.minute,
+                                               'second': turn_time.second}}
     with open('most_recent_games.json', 'w') as most_recent_games_file:
         json.dump(current_games, most_recent_games_file)
 
@@ -118,7 +127,15 @@ def handle_pydt_json(pydt_game: CivTurnInfo):
     message = f"Hey, {player_name}, {leader_name} is waiting for you to command {civ_name} in {game_name}. " \
               f"The game is on turn {turn_number}"
     api_matrix_bot.main(message)
-    current_games[game_name] = {'player_name': player_name, 'turn_number': turn_number}
+    turn_time = datetime.now()
+    current_games[game_name] = {'player_name': player_name,
+                                'turn_number': turn_number,
+                                'time_stamp': {'year': turn_time.year,
+                                               'month': turn_time.month,
+                                               'day': turn_time.day,
+                                               'hour': turn_time.hour,
+                                               'minute': turn_time.minute,
+                                               'second': turn_time.second}}
     with open('most_recent_games.json', 'w') as most_recent_games_file:
         json.dump(current_games, most_recent_games_file)
 
@@ -134,13 +151,15 @@ def return_current_games(player_to_blame: Optional[str] = Query(None,
     Otherwise it will return a list of all the games outstanding.
     """
     if player_to_blame:
-        for games in current_games.keys():
-            if player_to_blame in current_games[games].get('player_name'):
-                break
-            else:
-                raise HTTPException(status_code=404, detail="Player not found")
-        return {game: game_attributes for (game, game_attributes) in current_games.items()
-                if current_games[game].get('player_name') == player_to_blame}
+        does_player_exist = any(
+            player_to_blame in current_games[games].get('player_name')
+            for games in current_games.keys())
+
+        if does_player_exist:
+            return {game: game_attributes for (game, game_attributes) in current_games.items()
+                    if current_games[game].get('player_name') == player_to_blame}
+        else:
+            raise HTTPException(status_code=404, detail="Player not found")
     return current_games
 
 
