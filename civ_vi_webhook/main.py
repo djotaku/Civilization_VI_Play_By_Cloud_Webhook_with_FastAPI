@@ -138,4 +138,6 @@ def delete_game(game_to_delete: str = Query(None,
     if game_to_delete not in most_recent_games.keys():
         raise HTTPException(status_code=404, detail="Item not found")
     deleted_game = most_recent_games.pop(game_to_delete)
+    with open('most_recent_games.json', 'w') as most_recent_games_file:
+        json.dump(most_recent_games, most_recent_games_file)
     logging.debug(f"Deleted {deleted_game}")
