@@ -34,7 +34,7 @@ class ListenerMatrixBot:
 
         :returns: A dictionary of the games, next player, and turn number.
         """
-        response = requests.get(self.url)
+        response = requests.get(f"{self.url}/current_games")
         return dict(response.json())
 
     def format_current_games(self):
@@ -59,10 +59,32 @@ class ListenerMatrixBot:
             if response_dictionary[key].get('player_name') == player_name:
                 return_text += f"{game} awaiting turn {turn_number} by {player_name}\n"
                 number_of_games += 1
-        if number_of_games > 0:
+        if 0 < number_of_games < 2:
+            return f"There is {number_of_games} game waiting for {player_name} to take their turn:\n" + return_text
+        elif number_of_games > 1:
             return f"There are {number_of_games} games waiting for {player_name} to take their turn:\n" + return_text
         else:
             return f"There aren't any games waiting for {player_name}. Great job!"
+
+    def decipher_commands(self, command: str) -> str:
+        """Decide what the bot is being asked to do.
+
+        :param command: A string containing a command for Civ_Bot.
+        :returns: A formatted string for Civ_Bot to send to the room.
+        """
+        if command == "help":
+            return """Current Commands:
+                      !Civ_Bot help - this message
+                      !Civ_Bot current games - the list of games Civ_Bot currently knows about.
+                      !Civ_Bot blame <Matrix Username> - list of games waiting for that person."""
+
+        elif command == "current games":
+            return self.format_current_games()
+        elif command.startswith("blame"):
+            player_to_blame = command.lstrip("blame ")
+            return self.format_blame_games(player_to_blame)
+        else:
+            return "Sorry, I didn't recognize that command. Try !Civ_Bot help to see command list."
 
     async def main(self):
         my_client = await self.login()
@@ -76,25 +98,11 @@ class ListenerMatrixBot:
                 joins = sync_response.rooms.join
                 for room_id in joins:
                     for event in joins[room_id].timeline.events:
-                        if hasattr(event, 'body'):
-                            if event.body.startswith("!Civ_Bot current games"):
-                                data_to_send = self.format_current_games()
-                                logging.debug(data_to_send)
-                                content = {"body": data_to_send, "msgtype": "m.text"}
-                                await my_client.room_send(room_id, 'm.room.message', content)
-                            elif event.body.startswith("!Civ_Bot help"):
-                                data_to_send = ("""Current Commands:
-                            !Civ_Bot help - this message
-                            !Civ_Bot current games - the list of games Civ_Bot currently knows about.
-                            !Civ_Bot blame <Matrix Username> - list of games waiting on that person.""")
-                                content = {"body": data_to_send, "msgtype": "m.text"}
-                                await my_client.room_send(room_id, 'm.room.message', content)
-                            elif event.body.startswith("!Civ_Bot blame"):
-                                player = event.body.lstrip("!Civ_Bot blame ")
-                                data_to_send = self.format_blame_games(player)
-                                logging.debug(data_to_send)
-                                content = {"body": data_to_send, "msgtype": "m.text"}
-                                await my_client.room_send(room_id, 'm.room.message', content)
+                        if hasattr(event, 'body') and event.body.startswith("!Civ_Bot"):
+                            data_to_send = self.decipher_commands(event.body.lstrip("!Civ_Bot "))
+                            logging.debug(data_to_send)
+                            content = {"body": data_to_send, "msgtype": "m.text"}
+                            await my_client.room_send(room_id, 'm.room.message', content)
 
 
 my_matrix_bot = ListenerMatrixBot()
