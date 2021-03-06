@@ -34,6 +34,20 @@ If you happen to already be using (or prefer) Play Your Damn Turn (PYDT), they u
 ```
 This is why I have two different endpoints, one for Play by Cloud and one for Play Your Damn Turn (PYDT). Also note that the PBC turn number is a string while the PYDT JSON is an integer.
 
+## Endpoints
+
+All of this is documented in the code and by visiting the URL where you are running this code /docs eg: mycivilizationwebhooks.com/docs . Here is a brief overview:
+
+If we assume your URL is mycivilizationwebhooks.com, then:
+
+mycivilizationwebhooks.com/webhook - this is the endpoint to enter into Civ VI. It will create a message after each turn and send it to Matrix
+
+mycivilizationwebhooks.com/pydt - this is the endpoint to enter into Play Your Damn Turn. It will create a message after each turn and send it to Matrix.
+
+mycivilizationwebhooks.com/recent_games - will return all the games the program knows about
+
+mycivilizationwebhooks.com/delete_game - it will delete the game you pass to it. Say, when you're done with the game and no longer want to track it.
+
 ## How to use this code on your own
 
 For now (until I create a Python package)
@@ -51,13 +65,15 @@ Install the requirements:
 pip install -r requirements.txt
 ```
 
+Copy the sample_matrix.conf file to the main directory of the program. (The same directory with teh server and listener bash scripts) Edit the values to match those of a user you have created on the Matrix server to be a bot. 
+
+Using 2 terminals or a terminal muxer like screen or tmux, use one window for the server script and one for the listener script.
+
+Set up Nginx or Ampache to serve requests to your URL to uvicorn's port.
+
+Set up Civilization VI (for Play by Cloud) or Play Your Damn Turn to point to the appropriate endpoints.
 
 notes on steps for later:
-for dev:
-  - edit the config files with the appropriate data
-  - if you're running this way, the matrix.conf config file needs to be in the root directory - next to the server and listener bash scripts. 
-  - run the server and listener scripts
-  - set up Civilization VI (and, optionally PYDT) with the webhook API URL
   - include a sample nginx config??
 if end up making a Python package:
   -the steps needed there - some of the above about be covered by the package

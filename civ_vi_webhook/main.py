@@ -135,6 +135,7 @@ def return_recent_games():
 def delete_game(game_to_delete: str = Query(None,
                                             title="Game to Delete",
                                             description="The name of the game to delete")):
+    """Delete the game passed to this endpoint."""
     if game_to_delete not in most_recent_games.keys():
         raise HTTPException(status_code=404, detail="Item not found")
     deleted_game = most_recent_games.pop(game_to_delete)
