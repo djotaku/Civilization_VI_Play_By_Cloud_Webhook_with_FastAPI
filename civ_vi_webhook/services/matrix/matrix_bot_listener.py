@@ -29,36 +29,44 @@ class ListenerMatrixBot:
         logging.debug(f"Listener Room would be: {self.config.get('room')}")
         return client
 
-    def get_current_games(self):
+    def get_current_games(self, player_to_blame: str = ""):
         """Get the list of games from the recent games endpoint.
 
         :returns: A dictionary of the games, next player, and turn number.
         """
-        response = requests.get(f"{self.url}/current_games")
-        return dict(response.json())
+        if player_to_blame == "":
+            response = requests.get(f"{self.url}/current_games")
+        else:
+            response = requests.get(f"{self.url}/current_games", params={'player_to_blame': player_to_blame})
+        if response.status_code == 200:
+            return dict(response.json())
+        elif response.status_code == 404:
+            return {}
 
     def format_current_games(self):
         """Format the list of current games for display in Matrix server."""
         return_text = "Here is a list of the games currently known about on the server:\n"
         response_dictionary = self.get_current_games()
-        for key in response_dictionary:
-            game = key
-            player = response_dictionary[key].get('player_name')
-            turn_number = response_dictionary[key].get('turn_number')
-            return_text += f"{game} awaiting turn {turn_number} by {player}\n"
-            logging.debug(return_text)
+        if response_dictionary:
+            for key in response_dictionary:
+                game = key
+                player = response_dictionary[key].get('player_name')
+                turn_number = response_dictionary[key].get('turn_number')
+                return_text += f"{game} awaiting turn {turn_number} by {player}\n"
+                logging.debug(return_text)
+        else:
+            return_text = "There are no games available on the server. Or an error occurred."
         return return_text
 
     def format_blame_games(self, player_name: str) -> str:
         number_of_games = 0
         return_text = ""
-        response_dictionary = self.get_current_games()
+        response_dictionary = self.get_current_games(player_name)
         for key in response_dictionary:
             game = key
             turn_number = response_dictionary[key].get('turn_number')
-            if response_dictionary[key].get('player_name') == player_name:
-                return_text += f"{game} awaiting turn {turn_number} by {player_name}\n"
-                number_of_games += 1
+            return_text += f"{game} awaiting turn {turn_number} by {player_name}\n"
+            number_of_games += 1
         if 0 < number_of_games < 2:
             return f"There is {number_of_games} game waiting for {player_name} to take their turn:\n" + return_text
         elif number_of_games > 1:

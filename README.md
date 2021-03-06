@@ -44,7 +44,7 @@ mycivilizationwebhooks.com/webhook - this is the endpoint to enter into Civ VI. 
 
 mycivilizationwebhooks.com/pydt - this is the endpoint to enter into Play Your Damn Turn. It will create a message after each turn and send it to Matrix.
 
-mycivilizationwebhooks.com/recent_games - will return all the games the program knows about
+mycivilizationwebhooks.com/current_games - will return all the games the program knows about
 
 mycivilizationwebhooks.com/delete_game - it will delete the game you pass to it. Say, when you're done with the game and no longer want to track it.
 
