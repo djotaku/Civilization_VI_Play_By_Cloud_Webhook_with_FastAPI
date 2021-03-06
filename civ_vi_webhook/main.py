@@ -144,6 +144,12 @@ def return_current_games(player_to_blame: Optional[str] = Query(None,
     return current_games
 
 
+@app.get('/total_number_of_games')
+def return_total_number_of_games():
+    """Returns the total number of games the API knows about."""
+    return len(current_games)
+
+
 @app.delete('/delete_game')
 def delete_game(game_to_delete: str = Query(None,
                                             title="Game to Delete",

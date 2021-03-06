@@ -62,15 +62,23 @@ class ListenerMatrixBot:
         number_of_games = 0
         return_text = ""
         response_dictionary = self.get_current_games(player_name)
+        response = requests.get(f"{self.url}/total_number_of_games")
+        total_number_of_games = int(response.text)
         for key in response_dictionary:
             game = key
             turn_number = response_dictionary[key].get('turn_number')
             return_text += f"{game} awaiting turn {turn_number} by {player_name}\n"
             number_of_games += 1
         if 0 < number_of_games < 2:
-            return f"There is {number_of_games} game waiting for {player_name} to take their turn:\n" + return_text
+            return f"There is {number_of_games} game out of {total_number_of_games} waiting for {player_name} " \
+                   f"to take their turn:\n" + return_text
         elif number_of_games > 1:
-            return f"There are {number_of_games} games waiting for {player_name} to take their turn:\n" + return_text
+            if number_of_games == total_number_of_games:
+                return f"There are {number_of_games} games out of {total_number_of_games} waiting for {player_name} " \
+                       f"to take their turn:\n" + return_text + "It's all on you!! 😅"
+            else:
+                return f"There are {number_of_games} games out of {total_number_of_games} waiting for {player_name} " \
+                       f"to take their turn:\n" + return_text
         else:
             return f"There aren't any games waiting for {player_name}. Great job!"
 
