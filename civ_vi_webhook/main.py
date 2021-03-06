@@ -50,13 +50,14 @@ app = FastAPI(
     version="0.1.0"
 )
 
+logging.basicConfig(level=logging.DEBUG, format='%(levelname)s- api - %(asctime)s - %(message)s')
 api_logger = logging.getLogger("api server")
 api_logger.setLevel(logging.DEBUG)
-command_line_handler = logging.StreamHandler()
-command_line_handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(levelname)s- api - %(asctime)s - %(message)s')
-command_line_handler.setFormatter(formatter)
-api_logger.addHandler(command_line_handler)
+# command_line_handler = logging.StreamHandler()
+# command_line_handler.setLevel(logging.DEBUG)
+# formatter = logging.Formatter('%(levelname)s- api - %(asctime)s - %(message)s')
+# command_line_handler.setFormatter(formatter)
+# api_logger.addHandler(command_line_handler)
 
 # ##########################################
 # This should be added to FastAPI's Startup
@@ -100,6 +101,10 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
     if game_name in current_games.keys():
         if current_games[game_name]['player_name'] != player_name:
             api_logger.debug("Game exists, but this is not a duplicate")
+            message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
+            api_matrix_bot.main(message)
+        elif current_games[game_name]['turn_number'] != turn_number:
+            api_logger.debug("A turn in a two-player game was somehow missed.")
             message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
             api_matrix_bot.main(message)
         else:
