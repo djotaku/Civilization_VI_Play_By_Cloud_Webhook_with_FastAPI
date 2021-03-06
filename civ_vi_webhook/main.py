@@ -42,7 +42,7 @@ class CivTurnInfo(BaseModel):
 
 
 api_matrix_bot = matrix_bot.MatrixBot()
-most_recent_games = dict()
+current_games = dict()
 app = FastAPI(
     title="Eric's Civilization VI Play By Cloud and PYDT Webhook server",
     description="The server acts as an endpoint for PBC and PYDT JSON then sends it to the service you configure.",
@@ -58,7 +58,7 @@ api_logger = logging.getLogger("api server")
 
 try:
     with open('most_recent_games.json', 'r') as file:
-        most_recent_games = json.load(file)
+        current_games = json.load(file)
         api_logger.debug("JSON file loaded.")
 except FileNotFoundError:
     api_logger.warning("Prior JSON file not found. If this is your first run, this is OK.")
@@ -90,21 +90,21 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
     game_name = play_by_cloud_game.value1
     player_name = player_name_to_matrix_name(play_by_cloud_game.value2)
     turn_number = play_by_cloud_game.value3
-    if game_name in most_recent_games.keys():
-        if most_recent_games[game_name]['player_name'] != player_name:
+    if game_name in current_games.keys():
+        if current_games[game_name]['player_name'] != player_name:
             api_logger.debug("Game exists, but this is not a duplicate")
             message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
             api_matrix_bot.main(message)
-            most_recent_games[game_name] = {'player_name': player_name, 'turn_number': turn_number}
+            current_games[game_name] = {'player_name': player_name, 'turn_number': turn_number}
         else:
             api_logger.debug("Game exists and this is a duplicate entry.")
     else:
-        most_recent_games[game_name] = {'player_name': player_name, 'turn_number': turn_number}
+        current_games[game_name] = {'player_name': player_name, 'turn_number': turn_number}
         api_logger.debug("New game.")
         message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
         api_matrix_bot.main(message)
     with open('most_recent_games.json', 'w') as most_recent_games_file:
-        json.dump(most_recent_games, most_recent_games_file)
+        json.dump(current_games, most_recent_games_file)
 
 
 @app.post('/pydt', status_code=status.HTTP_201_CREATED)
@@ -118,18 +118,16 @@ def handle_pydt_json(pydt_game: CivTurnInfo):
     message = f"Hey, {player_name}, {leader_name} is waiting for you to command {civ_name} in {game_name}. " \
               f"The game is on turn {turn_number}"
     api_matrix_bot.main(message)
-    most_recent_games[game_name] = {'player_name': player_name, 'turn_number': turn_number}
+    current_games[game_name] = {'player_name': player_name, 'turn_number': turn_number}
     with open('most_recent_games.json', 'w') as most_recent_games_file:
-        json.dump(most_recent_games, most_recent_games_file)
+        json.dump(current_games, most_recent_games_file)
 
 
-@app.get('/recent_games')
-def return_recent_games():
+@app.get('/current_games')
+def return_current_games():
     """Returns the dictionary containing the games awaiting a turn.
-
-    In the future this endpoint may change to /current_games to better reflect what it returns.
     """
-    return most_recent_games
+    return current_games
 
 
 @app.delete('/delete_game')
@@ -137,9 +135,9 @@ def delete_game(game_to_delete: str = Query(None,
                                             title="Game to Delete",
                                             description="The name of the game to delete")):
     """Delete the game passed to this endpoint."""
-    if game_to_delete not in most_recent_games.keys():
+    if game_to_delete not in current_games.keys():
         raise HTTPException(status_code=404, detail="Item not found")
-    deleted_game = most_recent_games.pop(game_to_delete)
+    deleted_game = current_games.pop(game_to_delete)
     with open('most_recent_games.json', 'w') as most_recent_games_file:
-        json.dump(most_recent_games, most_recent_games_file)
+        json.dump(current_games, most_recent_games_file)
     api_logger.debug(f"Deleted {deleted_game}")
