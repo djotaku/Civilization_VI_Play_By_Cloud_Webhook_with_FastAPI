@@ -49,7 +49,8 @@ app = FastAPI(
     version="0.1.0"
 )
 
-logging.basicConfig(level=logging.DEBUG, format='%(levelname)s- %(asctime)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(levelname)s- api - %(asctime)s - %(message)s')
+api_logger = logging.getLogger("api server")
 
 # ##########################################
 # This should be added to FastAPI's Startup
@@ -58,9 +59,9 @@ logging.basicConfig(level=logging.DEBUG, format='%(levelname)s- %(asctime)s - %(
 try:
     with open('most_recent_games.json', 'r') as file:
         most_recent_games = json.load(file)
-        logging.debug("JSON file loaded.")
+        api_logger.debug("JSON file loaded.")
 except FileNotFoundError:
-    logging.warning("Prior JSON file not found. If this is your first run, this is OK.")
+    api_logger.warning("Prior JSON file not found. If this is your first run, this is OK.")
 
 # ###############
 # End of Startup
@@ -85,21 +86,21 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
     The reason for the duplication checks here are in case more than one player has the webhook enabled for all turns.
     That may be desirable because, for example, right now Mac users have crashes when using the webhook.
     """
-    logging.debug(f'JSON from Play By Cloud: {play_by_cloud_game}')
+    api_logger.debug(f'JSON from Play By Cloud: {play_by_cloud_game}')
     game_name = play_by_cloud_game.value1
     player_name = player_name_to_matrix_name(play_by_cloud_game.value2)
     turn_number = play_by_cloud_game.value3
     if game_name in most_recent_games.keys():
         if most_recent_games[game_name]['player_name'] != player_name:
-            logging.debug("Game exists, but this is not a duplicate")
+            api_logger.debug("Game exists, but this is not a duplicate")
             message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
             api_matrix_bot.main(message)
             most_recent_games[game_name] = {'player_name': player_name, 'turn_number': turn_number}
         else:
-            logging.debug("Game exists and this is a duplicate entry.")
+            api_logger.debug("Game exists and this is a duplicate entry.")
     else:
         most_recent_games[game_name] = {'player_name': player_name, 'turn_number': turn_number}
-        logging.debug("New game.")
+        api_logger.debug("New game.")
         message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
         api_matrix_bot.main(message)
     with open('most_recent_games.json', 'w') as most_recent_games_file:
@@ -108,7 +109,7 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
 
 @app.post('/pydt', status_code=status.HTTP_201_CREATED)
 def handle_pydt_json(pydt_game: CivTurnInfo):
-    logging.debug(f'JSON from PYDT: {pydt_game}')
+    api_logger.debug(f'JSON from PYDT: {pydt_game}')
     game_name = pydt_game.gameName
     player_name = player_name_to_matrix_name(pydt_game.userName)
     turn_number = pydt_game.round
@@ -141,4 +142,4 @@ def delete_game(game_to_delete: str = Query(None,
     deleted_game = most_recent_games.pop(game_to_delete)
     with open('most_recent_games.json', 'w') as most_recent_games_file:
         json.dump(most_recent_games, most_recent_games_file)
-    logging.debug(f"Deleted {deleted_game}")
+    api_logger.debug(f"Deleted {deleted_game}")
