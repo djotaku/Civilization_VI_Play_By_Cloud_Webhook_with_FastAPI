@@ -42,7 +42,17 @@ class CivTurnInfo(BaseModel):
         }
 
 
+# ##########
+# Services
+# ##########
 api_matrix_bot = matrix_bot.MatrixBot()
+
+# ##########
+# Configs
+# ##########
+
+player_name_conversions = {}
+
 current_games = dict()
 app = FastAPI(
     title="Eric's Civilization VI Play By Cloud and PYDT Webhook server",
@@ -53,11 +63,7 @@ app = FastAPI(
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s- api - %(asctime)s - %(message)s')
 api_logger = logging.getLogger("api server")
 api_logger.setLevel(logging.DEBUG)
-# command_line_handler = logging.StreamHandler()
-# command_line_handler.setLevel(logging.DEBUG)
-# formatter = logging.Formatter('%(levelname)s- api - %(asctime)s - %(message)s')
-# command_line_handler.setFormatter(formatter)
-# api_logger.addHandler(command_line_handler)
+
 
 # ##########################################
 # This should be added to FastAPI's Startup
@@ -66,25 +72,29 @@ api_logger.setLevel(logging.DEBUG)
 try:
     with open('most_recent_games.json', 'r') as file:
         current_games = json.load(file)
-        api_logger.debug("JSON file loaded.")
+        api_logger.debug("current_games file loaded.")
 except FileNotFoundError:
     api_logger.warning("Prior JSON file not found. If this is your first run, this is OK.")
 
-
+try:
+    with open('player_names.conf', 'r') as file:
+        player_name_conversions = json.load(file)
+        api_logger.debug("Player Conversion file loaded.")
+except FileNotFoundError:
+    api_logger.warning("No Player Conversion file loaded. Messages will use Steam account names.")
 # ###############
 # End of Startup
 # ###############
 
 
 def player_name_to_matrix_name(player_name: str) -> str:
-    if player_name == "One Oh Eight":
-        return "Dan"
-    elif player_name == "TheDJOtaku":
-        return "Eric"
-    elif player_name == "Wedge":
-        return "David"
-    else:
+    if not player_name_conversions:
         return player_name
+    api_logger.debug("player_name_conversions exists")
+    if player_name not in player_name_conversions['matrix'].keys():
+        return player_name
+    api_logger.debug(f"player name is found in the dictionary keys. It is {player_name}")
+    return player_name_conversions['matrix'][player_name]
 
 
 @app.post('/webhook', status_code=status.HTTP_201_CREATED)
