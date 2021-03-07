@@ -95,6 +95,7 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
     That may be desirable because, for example, right now Mac users have crashes when using the webhook.
     """
     api_logger.debug(f'JSON from Play By Cloud: {play_by_cloud_game}')
+    turn_time = datetime.now()
     game_name = play_by_cloud_game.value1
     player_name = player_name_to_matrix_name(play_by_cloud_game.value2)
     turn_number = play_by_cloud_game.value3
@@ -102,26 +103,41 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
         if current_games[game_name]['player_name'] != player_name:
             api_logger.debug("Game exists, but this is not a duplicate")
             message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
+            current_games[game_name] = {'player_name': player_name,
+                                        'turn_number': turn_number,
+                                        'time_stamp': {'year': turn_time.year,
+                                                       'month': turn_time.month,
+                                                       'day': turn_time.day,
+                                                       'hour': turn_time.hour,
+                                                       'minute': turn_time.minute,
+                                                       'second': turn_time.second}}
             api_matrix_bot.main(message)
         elif current_games[game_name]['turn_number'] != turn_number:
             api_logger.debug("A turn in a two-player game was somehow missed.")
             message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
+            current_games[game_name] = {'player_name': player_name,
+                                        'turn_number': turn_number,
+                                        'time_stamp': {'year': turn_time.year,
+                                                       'month': turn_time.month,
+                                                       'day': turn_time.day,
+                                                       'hour': turn_time.hour,
+                                                       'minute': turn_time.minute,
+                                                       'second': turn_time.second}}
             api_matrix_bot.main(message)
         else:
             api_logger.debug("Game exists and this is a duplicate entry.")
     else:
         api_logger.debug("New game.")
         message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
+        current_games[game_name] = {'player_name': player_name,
+                                    'turn_number': turn_number,
+                                    'time_stamp': {'year': turn_time.year,
+                                                   'month': turn_time.month,
+                                                   'day': turn_time.day,
+                                                   'hour': turn_time.hour,
+                                                   'minute': turn_time.minute,
+                                                   'second': turn_time.second}}
         api_matrix_bot.main(message)
-    turn_time = datetime.now()
-    current_games[game_name] = {'player_name': player_name,
-                                'turn_number': turn_number,
-                                'time_stamp': {'year': turn_time.year,
-                                               'month': turn_time.month,
-                                               'day': turn_time.day,
-                                               'hour': turn_time.hour,
-                                               'minute': turn_time.minute,
-                                               'second': turn_time.second}}
     with open('most_recent_games.json', 'w') as most_recent_games_file:
         json.dump(current_games, most_recent_games_file)
 
