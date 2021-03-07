@@ -126,6 +126,7 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
             api_matrix_bot.main(message)
         else:
             api_logger.debug("Game exists and this is a duplicate entry.")
+            raise HTTPException(status_code=429, detail="Game exists and this is a duplicate entry.")
     else:
         api_logger.debug("New game.")
         message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
