@@ -7,6 +7,10 @@ from pydantic import BaseModel
 
 from .services.matrix import matrix_bot_sender as matrix_bot
 
+logging.basicConfig(level=logging.DEBUG, format='%(levelname)s- api - %(asctime)s - %(message)s')
+api_logger = logging.getLogger("api server")
+api_logger.setLevel(logging.DEBUG)
+
 
 class CivTurnInfo(BaseModel):
     """Civilization Turn info JSON Payload.
@@ -84,11 +88,6 @@ app = FastAPI(
     description="The server acts as an endpoint for PBC and PYDT JSON then sends it to the service you configure.",
     version="0.2.0"
 )
-
-logging.basicConfig(level=logging.DEBUG, format='%(levelname)s- api - %(asctime)s - %(message)s')
-api_logger = logging.getLogger("api server")
-api_logger.setLevel(logging.DEBUG)
-
 
 # #############
 # end Configs #
