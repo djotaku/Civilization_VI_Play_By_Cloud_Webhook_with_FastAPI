@@ -93,6 +93,7 @@ app = FastAPI(
 # end Configs #
 # #############
 
+
 def player_name_to_matrix_name(player_name: str) -> str:
     if not player_name_conversions:
         return player_name
