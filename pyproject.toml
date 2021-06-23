@@ -10,6 +10,7 @@ python = "^3.9"
 matrix-nio = "^0.17.0"
 fastapi = "^0.63.0"
 uvicorn = "^0.13.4"
+requests = "^2.25.1"
 
 [tool.poetry.dev-dependencies]
 matrix-nio = "^0.17.0"

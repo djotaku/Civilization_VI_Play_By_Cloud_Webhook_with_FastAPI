@@ -42,6 +42,31 @@ class CivTurnInfo(BaseModel):
         }
 
 
+def load_most_recent_games() -> dict:
+    """Loads in the most recent games from the JSON file.
+
+    I have moved this to a function so it can be mocked out for testing."""
+    games = {}
+    try:
+        with open('most_recent_games.json', 'r') as file:
+            games = json.load(file)
+            api_logger.debug("current_games file loaded.")
+    except FileNotFoundError:
+        api_logger.warning("Prior JSON file not found. If this is your first run, this is OK.")
+    return games
+
+
+def load_player_names() -> dict:
+    """If player names have been defined, load them in."""
+    try:
+        with open('player_names.conf', 'r') as file:
+            player_names = json.load(file)
+            api_logger.debug("Player Conversion file loaded.")
+    except FileNotFoundError:
+        api_logger.warning("No Player Conversion file loaded. Messages will use Steam account names.")
+    return player_names
+
+
 # ##########
 # Services
 # ##########
@@ -51,13 +76,13 @@ api_matrix_bot = matrix_bot.MatrixBot()
 # Configs
 # ##########
 
-player_name_conversions = {}
+player_name_conversions = load_player_names()
 
-current_games = dict()
+current_games = load_most_recent_games()
 app = FastAPI(
     title="Eric's Civilization VI Play By Cloud and PYDT Webhook server",
     description="The server acts as an endpoint for PBC and PYDT JSON then sends it to the service you configure.",
-    version="0.1.0"
+    version="0.2.0"
 )
 
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s- api - %(asctime)s - %(message)s')
@@ -65,27 +90,9 @@ api_logger = logging.getLogger("api server")
 api_logger.setLevel(logging.DEBUG)
 
 
-# ##########################################
-# This should be added to FastAPI's Startup
-# ##########################################
-
-try:
-    with open('most_recent_games.json', 'r') as file:
-        current_games = json.load(file)
-        api_logger.debug("current_games file loaded.")
-except FileNotFoundError:
-    api_logger.warning("Prior JSON file not found. If this is your first run, this is OK.")
-
-try:
-    with open('player_names.conf', 'r') as file:
-        player_name_conversions = json.load(file)
-        api_logger.debug("Player Conversion file loaded.")
-except FileNotFoundError:
-    api_logger.warning("No Player Conversion file loaded. Messages will use Steam account names.")
-# ###############
-# End of Startup
-# ###############
-
+# #############
+# end Configs #
+# #############
 
 def player_name_to_matrix_name(player_name: str) -> str:
     if not player_name_conversions:
