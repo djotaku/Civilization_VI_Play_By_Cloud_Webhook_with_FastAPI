@@ -112,3 +112,17 @@ def test_return_total_number_of_games():
     response = client.get("/total_number_of_games")
     assert response.status_code == 200
     assert response.text == "2"
+
+
+@patch.object(civ_vi_webhook.main, 'current_games', {})
+def test_delete_game():
+    # first try to delete a game that isn't there
+    response = client.delete('/delete_game?game_to_delete=A Game')
+    assert response.status_code == 404
+    civ_vi_webhook.main.current_games = {"Eric's Barbarian Clash Game": {"player_name": "Eric", "turn_number": 300,
+                                                                         "time_stamp": {"year": 2021, "month": 10,
+                                                                                        "day": 3, "hour": 13,
+                                                                                        "minute": 15, "second": 4}}}
+    response = client.delete("/delete_game?game_to_delete=Eric's Barbarian Clash Game")
+    assert response.status_code == 200
+    assert civ_vi_webhook.main.current_games == {}
