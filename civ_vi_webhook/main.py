@@ -86,7 +86,7 @@ current_games = load_most_recent_games()
 app = FastAPI(
     title="Eric's Civilization VI Play By Cloud and PYDT Webhook server",
     description="The server acts as an endpoint for PBC and PYDT JSON then sends it to the service you configure.",
-    version="0.2.0"
+    version="0.2.1"
 )
 
 # #############
@@ -198,7 +198,7 @@ def return_total_number_of_games():
     return len(current_games)
 
 
-@app.delete('/delete_game')
+@app.delete('/delete_game', status_code=status.HTTP_200_OK)
 def delete_game(game_to_delete: str = Query(None,
                                             title="Game to Delete",
                                             description="The name of the game to delete")):
@@ -209,3 +209,4 @@ def delete_game(game_to_delete: str = Query(None,
     with open('most_recent_games.json', 'w') as most_recent_games_file:
         json.dump(current_games, most_recent_games_file)
     api_logger.debug(f"Deleted {deleted_game}")
+    return {"deleted_game": deleted_game}
