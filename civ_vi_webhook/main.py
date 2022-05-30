@@ -86,7 +86,7 @@ current_games = load_most_recent_games()
 app = FastAPI(
     title="Eric's Civilization VI Play By Cloud and PYDT Webhook server",
     description="The server acts as an endpoint for PBC and PYDT JSON then sends it to the service you configure.",
-    version="0.2.2"
+    version="0.2.3"
 )
 
 # #############

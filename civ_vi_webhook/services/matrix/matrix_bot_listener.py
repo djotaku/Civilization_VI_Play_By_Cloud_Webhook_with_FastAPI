@@ -136,7 +136,7 @@ class ListenerMatrixBot:
         :param game_to_delete: The Game to delete.
         :returns: A string letting the user know the success or failure of the deletion.
         """
-        response = requests.get(f"{self.url}/delete_game", params={'game_to_delete': game_to_delete})
+        response = requests.delete(f"{self.url}/delete_game", params={'game_to_delete': game_to_delete})
         if response.status_code == 200:
             game_info = response.json()
             return f"Deleted {game_info['deleted_game']}"
