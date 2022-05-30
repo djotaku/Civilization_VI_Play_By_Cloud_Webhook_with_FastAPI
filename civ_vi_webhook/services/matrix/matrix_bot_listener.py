@@ -14,18 +14,12 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(asctime)s - %(
 
 def figure_out_base_sixty(number: int) -> (int, int):
     """Figure out the next number up if I have more than 59 seconds or minutes."""
-    if number > 59:
-        return math.floor(number/60), number % 60
-    else:
-        return 0, number
+    return (math.floor(number/60), number % 60) if number > 59 else (0, number)
 
 
 def figure_out_days(number: int) -> (int, int):
     """Figure out number of days given a number of hours."""
-    if number > 23:
-        return math.floor(number/60), number % 60
-    else:
-        return 0, number
+    return (math.floor(number/60), number % 60) if number > 23 else (0, number)
 
 
 def return_time(time_difference) -> (int, int, int, int):
@@ -57,7 +51,7 @@ class ListenerMatrixBot:
                 file.close()
                 self.url = self.config.get('webhook_url')
         except FileNotFoundError:
-            logging.warning(f"Settings not found.")
+            logging.warning("Settings not found.")
 
     async def login(self):
         client = AsyncClient(self.config.get('server'), self.config.get('username'))
@@ -71,10 +65,8 @@ class ListenerMatrixBot:
 
         :returns: A dictionary of the games, next player, and turn number.
         """
-        if player_to_blame == "":
-            response = requests.get(f"{self.url}/current_games")
-        else:
-            response = requests.get(f"{self.url}/current_games", params={'player_to_blame': player_to_blame})
+        response = requests.get(f"{self.url}/current_games", params={'player_to_blame': player_to_blame}) if player_to_blame else requests.get(f"{self.url}/current_games")
+
         if response.status_code == 200:
             return dict(response.json())
         elif response.status_code == 404:
@@ -83,8 +75,7 @@ class ListenerMatrixBot:
     def format_current_games(self):
         """Format the list of current games for display in Matrix server."""
         return_text = "Here is a list of the games currently known about on the server:\n"
-        response_dictionary = self.get_current_games()
-        if response_dictionary:
+        if response_dictionary := self.get_current_games():
             for key in response_dictionary:
                 game = key
                 player = response_dictionary[key].get('player_name')

@@ -17,7 +17,7 @@ class MatrixBot:
                 logging.debug("Alert Matrix Bot Config loaded.")
                 file.close()
         except FileNotFoundError:
-            logging.warning(f"Settings not found.")
+            logging.warning("Settings not found.")
 
     async def send_message(self, message: str):
         client = AsyncClient(self.config.get('server'), self.config.get('username'))

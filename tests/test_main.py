@@ -3,7 +3,6 @@ from unittest.mock import patch, Mock
 from civ_vi_webhook.main import app
 import civ_vi_webhook.main
 
-
 client = TestClient(app)
 matrix_bot_mock = Mock()
 
@@ -11,7 +10,8 @@ matrix_bot_mock = Mock()
 @patch.object(civ_vi_webhook.main, 'current_games', {})
 @patch.object(civ_vi_webhook.main.api_matrix_bot, 'main', matrix_bot_mock)
 def test_webhook_good_data():
-    response = client.post("/webhook", json={"value1": "Eric's Barbarian Clash Game", "value2": "Eric", "value3": "300"})
+    response = client.post("/webhook",
+                           json={"value1": "Eric's Barbarian Clash Game", "value2": "Eric", "value3": "300"})
     assert response.status_code == 201
     assert civ_vi_webhook.main.current_games["Eric's Barbarian Clash Game"]["player_name"] == "Eric"
     assert civ_vi_webhook.main.current_games["Eric's Barbarian Clash Game"]["turn_number"] == "300"
@@ -21,7 +21,8 @@ def test_webhook_good_data():
 @patch.object(civ_vi_webhook.main.api_matrix_bot, 'main', matrix_bot_mock)
 def test_webhook_duplicate_data():
     client.post("/webhook", json={"value1": "Eric's Barbarian Clash Game", "value2": "Eric", "value3": "300"})
-    response = client.post("/webhook", json={"value1": "Eric's Barbarian Clash Game", "value2": "Eric", "value3": "300"})
+    response = client.post("/webhook",
+                           json={"value1": "Eric's Barbarian Clash Game", "value2": "Eric", "value3": "300"})
     assert response.status_code == 429
 
 
@@ -50,14 +51,16 @@ def test_pydt_good_data():
 @patch.object(civ_vi_webhook.main, 'current_games', {})
 def test_pydt_message():
     with patch.object(civ_vi_webhook.main.api_matrix_bot, 'main') as mock:
-        response = client.post("/pydt", json={"value1": "Eric's Barbarian Clash Game", "value2": "Eric", "value3": "300",
-                                              "gameName": "Eric's Barbarian Clash Game",
-                                              "userName": "Eric",
-                                              "round": 300,
-                                              "civName": "Sumeria",
-                                              "leaderName": "Gilgamesh"
-                                              })
-    mock.assert_called_with("Hey, Eric, Gilgamesh is waiting for you to command Sumeria in Eric's Barbarian Clash Game. The game is on turn 300")
+        response = client.post("/pydt",
+                               json={"value1": "Eric's Barbarian Clash Game", "value2": "Eric", "value3": "300",
+                                     "gameName": "Eric's Barbarian Clash Game",
+                                     "userName": "Eric",
+                                     "round": 300,
+                                     "civName": "Sumeria",
+                                     "leaderName": "Gilgamesh"
+                                     })
+    mock.assert_called_with(
+        "Hey, Eric, Gilgamesh is waiting for you to command Sumeria in Eric's Barbarian Clash Game. The game is on turn 300")
 
 
 current_games_for_endpoint = {"Eric's Barbarian Clash Game": {"player_name": "Eric", "turn_number": 300,
@@ -125,4 +128,4 @@ def test_delete_game():
                                                                                         "minute": 15, "second": 4}}}
     response = client.delete("/delete_game?game_to_delete=Eric's Barbarian Clash Game")
     assert response.status_code == 200
-    assert civ_vi_webhook.main.current_games == {}
+    assert not civ_vi_webhook.main.current_games
