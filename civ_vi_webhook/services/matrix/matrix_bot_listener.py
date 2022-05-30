@@ -128,6 +128,21 @@ class ListenerMatrixBot:
         else:
             return f"There aren't any games waiting for {player_name}. Great job!"
 
+    def delete_game(self, game_to_delete: str) -> str:
+        """Delete the game requested by the user.
+
+        If that isn't a game, let the user know.
+
+        :param game_to_delete: The Game to delete.
+        :returns: A string letting the user know the success or failure of the deletion.
+        """
+        response = requests.get(f"{self.url}/delete_game", params={'game_to_delete': game_to_delete})
+        if response.status_code == 200:
+            game_info = response.json()
+            return f"Deleted {game_info['deleted_game']}"
+        elif response.status_code == 404:
+            return f"{game_to_delete} was not in the system."
+
     def decipher_commands(self, command: str) -> str:
         """Decide what the bot is being asked to do.
 
@@ -138,13 +153,18 @@ class ListenerMatrixBot:
             return """Current Commands:
                       !Civ_Bot help - this message
                       !Civ_Bot current games - the list of games Civ_Bot currently knows about.
-                      !Civ_Bot blame <Matrix Username> - list of games waiting for that person."""
+                      !Civ_Bot blame <Matrix Username> - list of games waiting for that person.
+                      !Civ_Bot delete <name of game> - delete the game from the database.
+                      """
 
         elif command == "current games":
             return self.format_current_games()
         elif command.startswith("blame"):
             player_to_blame = command.lstrip("blame ")
             return self.format_blame_games(player_to_blame)
+        elif command.startswith("delete"):
+            game = command.lstrip("delete ")
+            return self.delete_game(game)
         else:
             return "Sorry, I didn't recognize that command. Try !Civ_Bot help to see command list."
 
