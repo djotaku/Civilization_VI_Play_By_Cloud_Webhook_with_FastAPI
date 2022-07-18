@@ -3,8 +3,8 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException, Query, status
 import json
 import logging
-from pydantic import BaseModel
 
+from .models.turns import CivTurnInfo
 from .services.matrix import matrix_bot_sender as matrix_bot
 
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s- api - %(asctime)s - %(message)s')
@@ -12,44 +12,8 @@ api_logger = logging.getLogger("api server")
 api_logger.setLevel(logging.DEBUG)
 
 
-class CivTurnInfo(BaseModel):
-    """Civilization Turn info JSON Payload.
-
-    The following is from Play by Cloud:
-    value1 is the game name.
-    value2 is the player name.
-    value3 is the turn number.
-
-    Play Your Damn Turn JSON contains those parameters as well as others which have self-evident names.
-    """
-    value1: str
-    value2: str
-    value3: str
-    gameName: Optional[str]
-    userName: Optional[str]
-    round: Optional[int]
-    civName: Optional[str]
-    leaderName: Optional[str]
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "value1": "Eric's Barbarian Clash Game",
-                "value2": "Eric",
-                "value3": "300",
-                "gameName": "Eric's Barbarian Clash Game",
-                "userName": "Eric",
-                "round": 300,
-                "civName": "Sumeria",
-                "leaderName": "Gilgamesh"
-            }
-        }
-
-
 def load_most_recent_games() -> dict:
-    """Loads in the most recent games from the JSON file.
-
-    I have moved this to a function so it can be mocked out for testing."""
+    """Loads in the most recent games from the JSON file."""
     games = {}
     try:
         with open('most_recent_games.json', 'r') as file:
@@ -177,7 +141,7 @@ def return_current_games(player_to_blame: Optional[str] = Query(None,
 
     If a player name is passed, it will return the games that player has outstanding.
 
-    Otherwise it will return a list of all the games outstanding.
+    Otherwise, it will return a list of all the games outstanding.
     """
     if player_to_blame:
         does_player_exist = any(
