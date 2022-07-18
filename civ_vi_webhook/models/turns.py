@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel
 
 
@@ -10,17 +8,31 @@ class CivTurnInfo(BaseModel):
     value1 is the game name.
     value2 is the player name.
     value3 is the turn number.
-
-    Play Your Damn Turn JSON contains those parameters as well as others which have self-evident names.
     """
     value1: str
     value2: str
     value3: int
-    gameName: Optional[str]
-    userName: Optional[str]
-    round: Optional[int]
-    civName: Optional[str]
-    leaderName: Optional[str]
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "value1": "Eric's Barbarian Clash Game",
+                "value2": "Eric",
+                "value3": "300",
+            }
+        }
+
+
+class PYDTTurnInfo(CivTurnInfo):
+    """Civilization Turn info JSON Payload from Play Your Damn Turn.
+
+    Play Your Damn Turn JSON contains the inherited parameters as well as others which have self-evident names.
+    """
+    gameName: str
+    userName: str
+    round: int
+    civName: str
+    leaderName: str
 
     class Config:
         schema_extra = {

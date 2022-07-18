@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException, Query, status
 import json
 import logging
 
-from .models.turns import CivTurnInfo
+from .models.turns import CivTurnInfo, PYDTTurnInfo
 from .services.matrix import matrix_bot_sender as matrix_bot
 
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s- api - %(asctime)s - %(message)s')
@@ -110,7 +110,7 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
 
 
 @app.post('/pydt', status_code=status.HTTP_201_CREATED)
-def handle_pydt_json(pydt_game: CivTurnInfo):
+def handle_pydt_json(pydt_game: PYDTTurnInfo):
     api_logger.debug(f'JSON from PYDT: {pydt_game}')
     game_name = pydt_game.gameName
     player_name = player_name_to_matrix_name(pydt_game.userName)
