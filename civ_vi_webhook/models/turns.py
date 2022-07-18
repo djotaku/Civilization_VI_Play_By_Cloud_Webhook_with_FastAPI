@@ -15,7 +15,7 @@ class CivTurnInfo(BaseModel):
     """
     value1: str
     value2: str
-    value3: str
+    value3: int
     gameName: Optional[str]
     userName: Optional[str]
     round: Optional[int]

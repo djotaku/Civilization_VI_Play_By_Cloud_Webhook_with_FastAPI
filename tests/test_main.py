@@ -14,7 +14,7 @@ def test_webhook_good_data():
                            json={"value1": "Eric's Barbarian Clash Game", "value2": "Eric", "value3": "300"})
     assert response.status_code == 201
     assert civ_vi_webhook.main.current_games["Eric's Barbarian Clash Game"]["player_name"] == "Eric"
-    assert civ_vi_webhook.main.current_games["Eric's Barbarian Clash Game"]["turn_number"] == "300"
+    assert civ_vi_webhook.main.current_games["Eric's Barbarian Clash Game"]["turn_number"] == 300
 
 
 @patch.object(civ_vi_webhook.main, 'current_games', {})
