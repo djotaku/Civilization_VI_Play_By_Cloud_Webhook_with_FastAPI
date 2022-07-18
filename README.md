@@ -50,24 +50,35 @@ mycivilizationwebhooks.com/delete_game - it will delete the game you pass to it.
 
 ## How to use this code on your own
 
-For now (until I create a Python package)
+I have switched to using Poetry to develop and run this project. 
+
+Pre-requirements
+- poetry (installed via your OS's package manager)
+- nginx or apachie web server
 
 On a server running Nginx or Apache, go to the folder that will contain this code. Clone the git repo.
 
-Create a virtual environment:
+Install the dependencies:
 
 ```bash
-python -m venv ./venv
+poetry install
 ```
 
-Install the requirements:
-```python
-pip install -r requirements.txt
-```
-
-Copy the sample_matrix.conf file to the main directory of the program. (The same directory with teh server and listener bash scripts) Edit the values to match those of a user you have created on the Matrix server to be a bot. 
+Copy the sample_matrix.conf file to the main directory of the program. (The same directory with the server and listener bash scripts) Edit the values to match those of a user you have created on the Matrix server to be a bot. 
 
 Using 2 terminals or a terminal muxer like screen or tmux, use one window for the server script and one for the listener script.
+
+in one terminal or window serve the FastAPI app via Uvicorn:
+```bash
+poetry shell
+uvicorn civ_vi_webhook.main:app --port 5000 --host 0.0.0.0 --reload
+```
+
+in the other one start the Matrix listener bot to listen for commands in Matrix: 
+```bash
+poetry shell
+python -m civ_vi_webhook.services.matrix.matrix_bot_listener.py
+```
 
 Set up Nginx or Ampache to serve requests to your URL to uvicorn's port.
 
