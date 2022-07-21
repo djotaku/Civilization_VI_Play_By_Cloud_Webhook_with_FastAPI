@@ -4,21 +4,9 @@ from fastapi import FastAPI, HTTPException, Query, status
 import json
 
 from . import api_logger
-from .dependencies import load_most_recent_games
+from .dependencies import load_most_recent_games, load_player_names
 from .models.turns import CivTurnInfo, PYDTTurnInfo
 from .services.matrix import matrix_bot_sender as matrix_bot
-
-
-def load_player_names() -> dict:
-    """If player names have been defined, load them in."""
-    try:
-        with open('player_names.conf', 'r') as file:
-            player_names = json.load(file)
-            api_logger.debug("Player Conversion file loaded.")
-    except FileNotFoundError:
-        api_logger.warning("No Player Conversion file loaded. Messages will use Steam account names.")
-    return player_names
-
 
 # ##########
 # Services
