@@ -4,20 +4,9 @@ from fastapi import FastAPI, HTTPException, Query, status
 import json
 
 from . import api_logger
+from .dependencies import load_most_recent_games
 from .models.turns import CivTurnInfo, PYDTTurnInfo
 from .services.matrix import matrix_bot_sender as matrix_bot
-
-
-def load_most_recent_games() -> dict:
-    """Loads in the most recent games from the JSON file."""
-    games = {}
-    try:
-        with open('most_recent_games.json', 'r') as file:
-            games = json.load(file)
-            api_logger.debug("current_games file loaded.")
-    except FileNotFoundError:
-        api_logger.warning("Prior JSON file not found. If this is your first run, this is OK.")
-    return games
 
 
 def load_player_names() -> dict:
