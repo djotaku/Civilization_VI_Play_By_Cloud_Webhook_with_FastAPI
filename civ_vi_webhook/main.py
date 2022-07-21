@@ -2,14 +2,10 @@ from datetime import datetime
 from typing import Optional
 from fastapi import FastAPI, HTTPException, Query, status
 import json
-import logging
 
+from . import api_logger
 from .models.turns import CivTurnInfo, PYDTTurnInfo
 from .services.matrix import matrix_bot_sender as matrix_bot
-
-logging.basicConfig(level=logging.DEBUG, format='%(levelname)s- api - %(asctime)s - %(message)s')
-api_logger = logging.getLogger("api server")
-api_logger.setLevel(logging.DEBUG)
 
 
 def load_most_recent_games() -> dict:
@@ -52,6 +48,7 @@ app = FastAPI(
     description="The server acts as an endpoint for PBC and PYDT JSON then sends it to the service you configure.",
     version="0.2.5"
 )
+
 
 # #############
 # end Configs #
