@@ -58,8 +58,8 @@ def return_current_games(player_to_blame: Optional[str] = Query(None,
     return {"games": all_games}
 
 
-@router.get('/total_number_of_games')
+@router.get('/total_number_of_games', response_model=information_models.GameCounts)
 def return_total_number_of_games():
     """Returns the total number of games the API knows about."""
     current_games = load_most_recent_games()
-    return len(current_games)
+    return {'total_games': len(current_games)}

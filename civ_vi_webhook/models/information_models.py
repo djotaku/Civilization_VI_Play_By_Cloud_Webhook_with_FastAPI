@@ -64,3 +64,8 @@ class CurrentGames(BaseModel):
                 ]
             }
         }
+
+
+class GameCounts(BaseModel):
+    """A model representing the number of games tracked on by the API."""
+    total_games: int
