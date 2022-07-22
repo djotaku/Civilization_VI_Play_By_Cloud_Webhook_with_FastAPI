@@ -1,13 +1,14 @@
 from fastapi import HTTPException, APIRouter, Query
 from typing import Optional
 
+import civ_vi_webhook.models.games
 from ..dependencies import load_most_recent_games
 from ..models import information_models
 
 router = APIRouter(tags=['Information Endpoints'])
 
 
-def dict_to_game_model(dictionary: dict) -> information_models.Game:
+def dict_to_game_model(dictionary: dict) -> civ_vi_webhook.models.games.Game:
     """Take in a dictionary of a game and turn it into a Game model.
 
     Example dict:
@@ -19,16 +20,16 @@ def dict_to_game_model(dictionary: dict) -> information_models.Game:
     """
     game_name = list(dictionary.keys())
     game_name = game_name[0]
-    time_stamp = information_models.TimeStamp(year = dictionary[game_name]['time_stamp']['year'],
-                                              month = dictionary[game_name]['time_stamp']['month'],
-                                              day = dictionary[game_name]['time_stamp']['day'],
-                                              hour = dictionary[game_name]['time_stamp']['hour'],
-                                              minute = dictionary[game_name]['time_stamp']['minute'],
-                                              second = dictionary[game_name]['time_stamp']['second'])
-    game_info = information_models.GameInfo(player_name=dictionary[game_name]['player_name'],
-                                            turn_number=dictionary[game_name]['turn_number'],
-                                            time_stamp=time_stamp)
-    game = information_models.Game(game_name=game_name, game_info=game_info)
+    time_stamp = civ_vi_webhook.models.games.TimeStamp(year = dictionary[game_name]['time_stamp']['year'],
+                                                       month = dictionary[game_name]['time_stamp']['month'],
+                                                       day = dictionary[game_name]['time_stamp']['day'],
+                                                       hour = dictionary[game_name]['time_stamp']['hour'],
+                                                       minute = dictionary[game_name]['time_stamp']['minute'],
+                                                       second = dictionary[game_name]['time_stamp']['second'])
+    game_info = civ_vi_webhook.models.games.GameInfo(player_name=dictionary[game_name]['player_name'],
+                                                     turn_number=dictionary[game_name]['turn_number'],
+                                                     time_stamp=time_stamp)
+    game = civ_vi_webhook.models.games.Game(game_name=game_name, game_info=game_info)
     return game
 
 

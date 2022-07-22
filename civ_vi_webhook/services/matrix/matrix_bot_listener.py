@@ -75,7 +75,7 @@ class ListenerMatrixBot:
             return {}
 
     @staticmethod
-    def format_response_text(self, games_list: list[dict]) -> str:
+    def format_response_text(games_list: list[dict]) -> str:
         """Format the list of games for both format_current games and format_blame_games"""
         return_text = ""
         for game in games_list:
