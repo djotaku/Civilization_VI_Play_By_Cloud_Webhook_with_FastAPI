@@ -74,6 +74,7 @@ class ListenerMatrixBot:
         elif response.status_code == 404:
             return {}
 
+    @staticmethod
     def format_response_text(self, games_list: list[dict]) -> str:
         """Format the list of games for both format_current games and format_blame_games"""
         return_text = ""
@@ -90,7 +91,6 @@ class ListenerMatrixBot:
             return_text += '\n'
         return return_text
 
-    @staticmethod
     def format_current_games(self):
         """Format the list of current games for display in Matrix server."""
         return_text = "Here is a list of the games currently known about on the server:\n"
