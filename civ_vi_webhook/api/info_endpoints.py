@@ -2,11 +2,12 @@ from fastapi import HTTPException, APIRouter, Query
 from typing import Optional
 
 from ..dependencies import load_most_recent_games
+from ..models import information_models
 
 router = APIRouter(tags=['Information Endpoints'])
 
 
-@router.get('/current_games')
+@router.get('/current_games', )#response_model=information_models.CurrentGames)
 def return_current_games(player_to_blame: Optional[str] = Query(None,
                                                                 title="Player to Blame",
                                                                 description="To see how many games outstanding.")):
