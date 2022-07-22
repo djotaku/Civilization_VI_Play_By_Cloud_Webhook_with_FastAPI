@@ -1,14 +1,13 @@
 from fastapi import HTTPException, APIRouter, Query
 from typing import Optional
 
-import civ_vi_webhook.models.games
 from ..dependencies import load_most_recent_games
-from ..models import information_models
+from ..models import information_models, games
 
 router = APIRouter(tags=['Information Endpoints'])
 
 
-def dict_to_game_model(dictionary: dict) -> civ_vi_webhook.models.games.Game:
+def dict_to_game_model(dictionary: dict) -> games.Game:
     """Take in a dictionary of a game and turn it into a Game model.
 
     Example dict:
@@ -20,16 +19,16 @@ def dict_to_game_model(dictionary: dict) -> civ_vi_webhook.models.games.Game:
     """
     game_name = list(dictionary.keys())
     game_name = game_name[0]
-    time_stamp = civ_vi_webhook.models.games.TimeStamp(year = dictionary[game_name]['time_stamp']['year'],
-                                                       month = dictionary[game_name]['time_stamp']['month'],
-                                                       day = dictionary[game_name]['time_stamp']['day'],
-                                                       hour = dictionary[game_name]['time_stamp']['hour'],
-                                                       minute = dictionary[game_name]['time_stamp']['minute'],
-                                                       second = dictionary[game_name]['time_stamp']['second'])
-    game_info = civ_vi_webhook.models.games.GameInfo(player_name=dictionary[game_name]['player_name'],
-                                                     turn_number=dictionary[game_name]['turn_number'],
-                                                     time_stamp=time_stamp)
-    game = civ_vi_webhook.models.games.Game(game_name=game_name, game_info=game_info)
+    time_stamp = games.TimeStamp(year=dictionary[game_name]['time_stamp']['year'],
+                                 month=dictionary[game_name]['time_stamp']['month'],
+                                 day=dictionary[game_name]['time_stamp']['day'],
+                                 hour=dictionary[game_name]['time_stamp']['hour'],
+                                 minute=dictionary[game_name]['time_stamp']['minute'],
+                                 second=dictionary[game_name]['time_stamp']['second'])
+    game_info = games.GameInfo(player_name=dictionary[game_name]['player_name'],
+                               turn_number=dictionary[game_name]['turn_number'],
+                               time_stamp=time_stamp)
+    game = games.Game(game_name=game_name, game_info=game_info)
     return game
 
 
@@ -52,7 +51,7 @@ def return_current_games(player_to_blame: Optional[str] = Query(None,
         if does_player_exist:
             return {"games": [dict_to_game_model({game: game_attributes})
                               for (game, game_attributes) in current_games.items()
-                    if current_games[game].get('player_name') == player_to_blame]}
+                              if current_games[game].get('player_name') == player_to_blame]}
         else:
             raise HTTPException(status_code=404, detail="Player not found")
     all_games = [dict_to_game_model({game: game_attributes}) for (game, game_attributes) in current_games.items()]
