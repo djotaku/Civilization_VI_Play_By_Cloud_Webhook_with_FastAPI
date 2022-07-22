@@ -7,7 +7,19 @@ from ..models import information_models
 router = APIRouter(tags=['Information Endpoints'])
 
 
-@router.get('/current_games', )#response_model=information_models.CurrentGames)
+def dict_to_game_model(dictionary: dict) -> information_models.Game:
+    """Take in a dictionary of a game and turn it into a Game model.
+
+    Example dict:
+
+    {"Eric's Barbarian Clash Game": {'player_name': 'Eric', 'turn_number': 300,
+    'time_stamp': {'year': 2022, 'month': 7, 'day': 21, 'hour': 20, 'minute': 33,
+    'second': 28}}}
+
+    """
+
+
+@router.get('/current_games', response_model=information_models.CurrentGames)
 def return_current_games(player_to_blame: Optional[str] = Query(None,
                                                                 title="Player to Blame",
                                                                 description="To see how many games outstanding.")):
@@ -28,7 +40,8 @@ def return_current_games(player_to_blame: Optional[str] = Query(None,
                     if current_games[game].get('player_name') == player_to_blame}
         else:
             raise HTTPException(status_code=404, detail="Player not found")
-    return current_games
+    all_games = None
+    return {"games": all_games}
 
 
 @router.get('/total_number_of_games')
