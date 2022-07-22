@@ -1,5 +1,7 @@
 from fastapi.testclient import TestClient
 from unittest.mock import patch, Mock
+
+import civ_vi_webhook.api.turn_endpoints
 from civ_vi_webhook.main import app
 import civ_vi_webhook.main
 
@@ -8,7 +10,7 @@ matrix_bot_mock = Mock()
 
 
 @patch.object(civ_vi_webhook.main, 'current_games', {})
-@patch.object(civ_vi_webhook.main.api_matrix_bot, 'main', matrix_bot_mock)
+@patch.object(civ_vi_webhook.api.turn_endpoints.api_matrix_bot, 'main', matrix_bot_mock)
 def test_webhook_good_data():
     response = client.post("/webhook",
                            json={"value1": "Eric's Barbarian Clash Game", "value2": "Eric", "value3": "300"})
@@ -18,7 +20,7 @@ def test_webhook_good_data():
 
 
 @patch.object(civ_vi_webhook.main, 'current_games', {})
-@patch.object(civ_vi_webhook.main.api_matrix_bot, 'main', matrix_bot_mock)
+@patch.object(civ_vi_webhook.api.turn_endpoints.api_matrix_bot, 'main', matrix_bot_mock)
 def test_webhook_duplicate_data():
     client.post("/webhook", json={"value1": "Eric's Barbarian Clash Game", "value2": "Eric", "value3": "300"})
     response = client.post("/webhook",
@@ -28,13 +30,13 @@ def test_webhook_duplicate_data():
 
 @patch.object(civ_vi_webhook.main, 'current_games', {})
 def test_webhook_message():
-    with patch.object(civ_vi_webhook.main.api_matrix_bot, 'main') as mock:
+    with patch.object(civ_vi_webhook.api.turn_endpoints.api_matrix_bot, 'main') as mock:
         client.post("/webhook", json={"value1": "Eric's Barbarian Clash Game", "value2": "Eric", "value3": "300"})
     mock.assert_called_with("Hey, Eric, it's your turn in Eric's Barbarian Clash Game. The game is on turn 300")
 
 
 @patch.object(civ_vi_webhook.main, 'current_games', {})
-@patch.object(civ_vi_webhook.main.api_matrix_bot, 'main', matrix_bot_mock)
+@patch.object(civ_vi_webhook.api.turn_endpoints.api_matrix_bot, 'main', matrix_bot_mock)
 def test_pydt_good_data():
     response = client.post("/pydt", json={"value1": "Eric's Barbarian Clash Game", "value2": "Eric", "value3": "300",
                                           "gameName": "Eric's Barbarian Clash Game",
@@ -50,7 +52,7 @@ def test_pydt_good_data():
 
 @patch.object(civ_vi_webhook.main, 'current_games', {})
 def test_pydt_message():
-    with patch.object(civ_vi_webhook.main.api_matrix_bot, 'main') as mock:
+    with patch.object(civ_vi_webhook.api.turn_endpoints.api_matrix_bot, 'main') as mock:
         response = client.post("/pydt",
                                json={"value1": "Eric's Barbarian Clash Game", "value2": "Eric", "value3": "300",
                                      "gameName": "Eric's Barbarian Clash Game",
