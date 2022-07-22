@@ -17,6 +17,19 @@ def dict_to_game_model(dictionary: dict) -> information_models.Game:
     'second': 28}}}
 
     """
+    game_name = list(dictionary.keys())
+    game_name = game_name[0]
+    time_stamp = information_models.TimeStamp(year = dictionary[game_name]['time_stamp']['year'],
+                                              month = dictionary[game_name]['time_stamp']['month'],
+                                              day = dictionary[game_name]['time_stamp']['day'],
+                                              hour = dictionary[game_name]['time_stamp']['hour'],
+                                              minute = dictionary[game_name]['time_stamp']['minute'],
+                                              second = dictionary[game_name]['time_stamp']['second'])
+    game_info = information_models.GameInfo(player_name=dictionary[game_name]['player_name'],
+                                            turn_number=dictionary[game_name]['turn_number'],
+                                            time_stamp=time_stamp)
+    game = information_models.Game(game_name=game_name, game_info=game_info)
+    return game
 
 
 @router.get('/current_games', response_model=information_models.CurrentGames)
@@ -36,11 +49,12 @@ def return_current_games(player_to_blame: Optional[str] = Query(None,
             for games in current_games.keys())
 
         if does_player_exist:
-            return {game: game_attributes for (game, game_attributes) in current_games.items()
-                    if current_games[game].get('player_name') == player_to_blame}
+            return {"games": [dict_to_game_model({game: game_attributes})
+                              for (game, game_attributes) in current_games.items()
+                    if current_games[game].get('player_name') == player_to_blame]}
         else:
             raise HTTPException(status_code=404, detail="Player not found")
-    all_games = None
+    all_games = [dict_to_game_model({game: game_attributes}) for (game, game_attributes) in current_games.items()]
     return {"games": all_games}
 
 

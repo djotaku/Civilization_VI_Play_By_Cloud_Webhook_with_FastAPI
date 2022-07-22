@@ -68,7 +68,7 @@ class ListenerMatrixBot:
         response = requests.get(f"{self.url}/current_games", params={'player_to_blame': player_to_blame}) if player_to_blame else requests.get(f"{self.url}/current_games")
 
         if response.status_code == 200:
-            return dict(response.json())
+            return response.json()
         elif response.status_code == 404:
             return {}
 
