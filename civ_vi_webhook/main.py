@@ -4,6 +4,7 @@ import json
 
 from . import api_logger
 from .dependencies import load_most_recent_games
+from .api import turn_endpoints
 
 app = FastAPI(
     title="Eric's Civilization VI Play By Cloud and PYDT Webhook server",
@@ -11,16 +12,7 @@ app = FastAPI(
     version="0.2.5"
 )
 
-
-# ##########
-# Configs
-# ##########
-
-current_games = load_most_recent_games()
-
-# #############
-# end Configs #
-# #############
+app.include_router(turn_endpoints.router)
 
 
 @app.get('/current_games')
@@ -33,6 +25,7 @@ def return_current_games(player_to_blame: Optional[str] = Query(None,
 
     Otherwise, it will return a list of all the games outstanding.
     """
+    current_games = load_most_recent_games()
     if player_to_blame:
         does_player_exist = any(
             player_to_blame in current_games[games].get('player_name')
@@ -49,6 +42,7 @@ def return_current_games(player_to_blame: Optional[str] = Query(None,
 @app.get('/total_number_of_games')
 def return_total_number_of_games():
     """Returns the total number of games the API knows about."""
+    current_games = load_most_recent_games()
     return len(current_games)
 
 
@@ -57,6 +51,7 @@ def delete_game(game_to_delete: str = Query(None,
                                             title="Game to Delete",
                                             description="The name of the game to delete")):
     """Delete the game passed to this endpoint."""
+    current_games = load_most_recent_games()
     if game_to_delete not in current_games.keys():
         raise HTTPException(status_code=404, detail="Item not found")
     deleted_game = current_games.pop(game_to_delete)

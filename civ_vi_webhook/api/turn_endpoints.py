@@ -1,14 +1,14 @@
 import json
 from datetime import datetime
 
-from fastapi import HTTPException
+from fastapi import HTTPException, APIRouter
 from starlette import status
 
 from civ_vi_webhook import api_logger
 from civ_vi_webhook.dependencies import load_player_names
-from civ_vi_webhook.main import app, current_games
 from civ_vi_webhook.models.turns import CivTurnInfo, PYDTTurnInfo
 from civ_vi_webhook.services.matrix import matrix_bot_sender as matrix_bot
+from ..dependencies import load_most_recent_games
 
 # ##########
 # Services
@@ -28,7 +28,10 @@ def player_name_to_matrix_name(player_name: str) -> str:
     return player_name_conversions['matrix'][player_name]
 
 
-@app.post('/webhook', status_code=status.HTTP_201_CREATED)
+router = APIRouter(tags=['Turn Endpoints'])
+
+
+@router.post('/webhook', status_code=status.HTTP_201_CREATED)
 def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
     """The API endpoint for Civilization's Play By Cloud JSON data.
 
@@ -36,6 +39,7 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
     That may be desirable because, for example, right now Mac users have crashes when using the webhook.
     """
     send_message = False
+    current_games = load_most_recent_games()
     api_logger.debug(f'JSON from Play By Cloud: {play_by_cloud_game}')
     turn_time = datetime.now()
     game_name = play_by_cloud_game.value1
@@ -69,7 +73,7 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
             json.dump(current_games, most_recent_games_file)
 
 
-@app.post('/pydt', status_code=status.HTTP_201_CREATED)
+@router.post('/pydt', status_code=status.HTTP_201_CREATED)
 def handle_pydt_json(pydt_game: PYDTTurnInfo):
     api_logger.debug(f'JSON from PYDT: {pydt_game}')
     game_name = pydt_game.gameName
@@ -81,6 +85,7 @@ def handle_pydt_json(pydt_game: PYDTTurnInfo):
               f"The game is on turn {turn_number}"
     api_matrix_bot.main(message)
     turn_time = datetime.now()
+    current_games = load_most_recent_games()
     current_games[game_name] = {'player_name': player_name,
                                 'turn_number': turn_number,
                                 'time_stamp': {'year': turn_time.year,
