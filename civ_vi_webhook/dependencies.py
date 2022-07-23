@@ -1,7 +1,11 @@
 import json
-
+from starlette.templating import Jinja2Templates
+from pathlib import Path
 from civ_vi_webhook import api_logger
 from civ_vi_webhook.models import games
+
+BASE_DIR = Path(__file__).resolve().parent
+templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
 
 
 def load_most_recent_games() -> dict:

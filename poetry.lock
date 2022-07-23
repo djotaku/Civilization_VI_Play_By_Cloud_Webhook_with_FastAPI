@@ -222,6 +222,20 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "jinja2"
+version = "3.1.2"
+description = "A very fast and expressive template engine."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+MarkupSafe = ">=2.0"
+
+[package.extras]
+i18n = ["Babel (>=2.7)"]
+
+[[package]]
 name = "jsonschema"
 version = "3.2.0"
 description = "An implementation of JSON Schema validation for Python"
@@ -256,6 +270,14 @@ redis = ["redis"]
 sqlalchemy = ["sqlalchemy"]
 test = ["pytest-cov (>=2.6)", "pytest (>4.0)"]
 zmq = ["pyzmq"]
+
+[[package]]
+name = "markupsafe"
+version = "2.1.1"
+description = "Safely add untrusted strings to HTML/XML markup."
+category = "main"
+optional = false
+python-versions = ">=3.7"
 
 [[package]]
 name = "matrix-nio"
@@ -515,7 +537,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "341a9e7c4a7fe97b9499048be0ef4a7fe7a211d98f28413a671c56d359e8a686"
+content-hash = "247d34815d2c32db0f3b9e33a8cb81a6d8f0f0608606249df52930d7e695fa4e"
 
 [metadata.files]
 aiofiles = []
@@ -539,8 +561,10 @@ hpack = []
 hyperframe = []
 idna = []
 iniconfig = []
+jinja2 = []
 jsonschema = []
 logbook = []
+markupsafe = []
 matrix-nio = []
 multidict = []
 packaging = []
