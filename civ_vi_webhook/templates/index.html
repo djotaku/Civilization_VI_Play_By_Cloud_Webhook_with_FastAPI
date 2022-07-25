@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <div class="container has-text-centered">
+    <p>
+        <table class="table is-striped">
+            <thead>
+            <tr>
+                <th>Game</th>
+                <th>Next Player</th>
+                <th>Turn Number</th>
+                <th>Last Turn Date/Time</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for game in current_games %}
+                <tr>
+                    <td>{{ game }}</td>
+                    <td>{{ current_games[game]['player_name'] }}</td>
+                    <td>{{ current_games[game]['turn_number'] }}</td>
+                    <td>{{ current_games[game]['time_stamp']['month']}}-
+                        {{current_games[game]['time_stamp']['day']}}-
+                        {{current_games[game]['time_stamp']['year']}}
+                        {{current_games[game]['time_stamp']['hour']}}:
+                    {{ current_games[game]['time_stamp']['minute'] }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </p>
+    </div>
+
+{% endblock %}

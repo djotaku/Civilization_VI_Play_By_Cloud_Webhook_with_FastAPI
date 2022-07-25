@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+import fastapi.responses
 from fastapi import HTTPException, APIRouter
 from starlette import status
 
@@ -54,7 +55,8 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
             send_message = True
         else:
             api_logger.debug("Game exists and this is a duplicate entry.")
-            raise HTTPException(status_code=429, detail="Game exists and this is a duplicate entry.")
+            return fastapi.responses.JSONResponse(status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                                                  content={"error": "Game exists and this is a duplicate entry."})
     else:
         api_logger.debug("New game.")
         send_message = True
@@ -71,6 +73,8 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
         api_matrix_bot.main(message)
         with open('most_recent_games.json', 'w') as most_recent_games_file:
             json.dump(current_games, most_recent_games_file)
+    return fastapi.responses.JSONResponse(status_code=status.HTTP_201_CREATED,
+                                          content={"status": "Game Created"})
 
 
 @router.post('/pydt', status_code=status.HTTP_201_CREATED)
@@ -96,3 +100,5 @@ def handle_pydt_json(pydt_game: PYDTTurnInfo):
                                                'second': turn_time.second}}
     with open('most_recent_games.json', 'w') as most_recent_games_file:
         json.dump(current_games, most_recent_games_file)
+    return fastapi.responses.JSONResponse(status_code=status.HTTP_201_CREATED,
+                                          content={"status": "Game Created"})

@@ -8,18 +8,17 @@ import math
 from nio import AsyncClient
 import requests
 
-
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(asctime)s - %(message)s')
 
 
 def figure_out_base_sixty(number: int) -> (int, int):
     """Figure out the next number up if I have more than 59 seconds or minutes."""
-    return (math.floor(number/60), number % 60) if number > 59 else (0, number)
+    return (math.floor(number / 60), number % 60) if number > 59 else (0, number)
 
 
 def figure_out_days(number: int) -> (int, int):
     """Figure out number of days given a number of hours."""
-    return (math.floor(number/60), number % 60) if number > 23 else (0, number)
+    return (math.floor(number / 60), number % 60) if number > 23 else (0, number)
 
 
 def return_time(time_difference) -> (int, int, int, int):
@@ -43,6 +42,7 @@ def determine_time_delta(year, month, day, hour, minute, second) -> str:
 
 class ListenerMatrixBot:
     """A bot to send alerts about the game to Matrix"""
+
     def __init__(self):
         try:
             with open('matrix.conf') as file:
@@ -65,32 +65,40 @@ class ListenerMatrixBot:
 
         :returns: A dictionary of the games, next player, and turn number.
         """
-        response = requests.get(f"{self.url}/current_games", params={'player_to_blame': player_to_blame}) if player_to_blame else requests.get(f"{self.url}/current_games")
+        response = requests.get(f"{self.url}/current_games",
+                                params={'player_to_blame': player_to_blame}) if player_to_blame else requests.get(
+            f"{self.url}/current_games")
 
         if response.status_code == 200:
-            return dict(response.json())
+            return response.json()
         elif response.status_code == 404:
             return {}
+
+    @staticmethod
+    def format_response_text(games_list: list[dict]) -> str:
+        """Format the list of games for both format_current games and format_blame_games"""
+        return_text = ""
+        for game in games_list:
+            game_name = game['game_name']
+            player = game['game_info'].get('player_name')
+            turn_number = game['game_info'].get('turn_number')
+            return_text += f"{game_name} awaiting turn {turn_number} by {player}. "
+            if game['game_info'].get('time_stamp'):
+                time_text = determine_time_delta(game['time_stamp']['year'], game['time_stamp']['month'],
+                                                 game['time_stamp']['day'], game['time_stamp']['hour'],
+                                                 game['time_stamp']['minute'], game['time_stamp']['second'])
+                return_text += time_text
+            return_text += '\n'
+        return return_text
 
     def format_current_games(self):
         """Format the list of current games for display in Matrix server."""
         return_text = "Here is a list of the games currently known about on the server:\n"
-        if response_dictionary := self.get_current_games():
-            for key in response_dictionary:
-                game = key
-                player = response_dictionary[key].get('player_name')
-                turn_number = response_dictionary[key].get('turn_number')
-                return_text += f"{game} awaiting turn {turn_number} by {player}. "
-                if response_dictionary[key].get('time_stamp'):
-                    time_text = determine_time_delta(response_dictionary[key]['time_stamp']['year'],
-                                                     response_dictionary[key]['time_stamp']['month'],
-                                                     response_dictionary[key]['time_stamp']['day'],
-                                                     response_dictionary[key]['time_stamp']['hour'],
-                                                     response_dictionary[key]['time_stamp']['minute'],
-                                                     response_dictionary[key]['time_stamp']['second'])
-                    return_text += time_text
-                return_text += '\n'
-                logging.debug(return_text)
+        if response_json := self.get_current_games():
+            response = json.load(response_json)
+            games = response['games']
+            return_text += self.format_response_text(games)
+            logging.debug(return_text)
         else:
             return_text = "There are no games available on the server. Or an error occurred."
         return return_text
@@ -98,23 +106,14 @@ class ListenerMatrixBot:
     def format_blame_games(self, player_name: str) -> str:
         number_of_games = 0
         return_text = ""
-        response_dictionary = self.get_current_games(player_name)
         response = requests.get(f"{self.url}/total_number_of_games")
-        total_number_of_games = int(response.text)
-        for key in response_dictionary:
-            game = key
-            turn_number = response_dictionary[key].get('turn_number')
-            return_text += f"{game} awaiting turn {turn_number} by {player_name} "
-            if response_dictionary[key].get('time_stamp'):
-                time_text = determine_time_delta(response_dictionary[key]['time_stamp']['year'],
-                                                 response_dictionary[key]['time_stamp']['month'],
-                                                 response_dictionary[key]['time_stamp']['day'],
-                                                 response_dictionary[key]['time_stamp']['hour'],
-                                                 response_dictionary[key]['time_stamp']['minute'],
-                                                 response_dictionary[key]['time_stamp']['second'])
-                return_text += time_text
-            return_text += '\n'
-            number_of_games += 1
+        total_number_of_games = response.json().get('total_games')
+        if response_json := self.get_current_games(player_name):
+            response = json.load(response_json)
+            games = response['games']
+            return_text += self.format_response_text(games)
+            logging.debug(return_text)
+            number_of_games = len(games)
         if 0 < number_of_games < 2:
             return f"There is {number_of_games} game out of {total_number_of_games} waiting for {player_name} " \
                    f"to take their turn:\n" + return_text
