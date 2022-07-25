@@ -1,3 +1,4 @@
+import fastapi.responses
 from fastapi import HTTPException, APIRouter, Query, status
 import json
 
@@ -15,7 +16,8 @@ def delete_game(game_to_delete: str = Query(None,
     """Delete the game passed to this endpoint."""
     current_games = load_most_recent_games()
     if game_to_delete not in current_games.keys():
-        raise HTTPException(status_code=404, detail="Item not found")
+        return fastapi.responses.JSONResponse(status_code=404,
+                                              content={"error": f"{game_to_delete} not found."})
     deleted_game = current_games.pop(game_to_delete)
     with open('most_recent_games.json', 'w') as most_recent_games_file:
         json.dump(current_games, most_recent_games_file)

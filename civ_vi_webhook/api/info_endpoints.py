@@ -1,3 +1,4 @@
+import fastapi.responses
 from fastapi import HTTPException, APIRouter, Query
 from typing import Optional
 
@@ -28,7 +29,8 @@ def return_current_games(player_to_blame: Optional[str] = Query(None,
                               for (game, game_attributes) in current_games.items()
                               if current_games[game].get('player_name') == player_to_blame]}
         else:
-            raise HTTPException(status_code=404, detail="Player not found")
+            return fastapi.responses.JSONResponse(status_code=404,
+                                                  content={"error": f"{player_to_blame} does not exist"})
     all_games = [dict_to_game_model({game: game_attributes}) for (game, game_attributes) in current_games.items()]
     return {"games": all_games}
 
