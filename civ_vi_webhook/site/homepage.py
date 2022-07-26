@@ -9,6 +9,14 @@ router = APIRouter(tags=['index'])
 
 @router.get('/')
 def index(request: Request):
-    current_games = load_most_recent_games()
+    all_games = load_most_recent_games()
+    current_games = dict()
+    completed_games = dict()
+    for game in all_games:
+        if all_games[game].get("game_completed"):
+            completed_games[game] = all_games[game]
+        else:
+            current_games[game] = all_games[game]
     return templates.TemplateResponse('index.html', {'request': request,
-                                                     "current_games": current_games})
+                                                     "current_games": current_games,
+                                                     "completed_games": completed_games})

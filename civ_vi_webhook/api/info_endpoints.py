@@ -1,5 +1,5 @@
 import fastapi.responses
-from fastapi import HTTPException, APIRouter, Query
+from fastapi import APIRouter, Query
 from typing import Optional
 
 from ..dependencies import load_most_recent_games, dict_to_game_model
