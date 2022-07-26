@@ -51,6 +51,7 @@ def dict_to_game_model(dictionary: dict) -> games.Game:
                                  second=dictionary[game_name]['time_stamp']['second'])
     game_info = games.GameInfo(player_name=dictionary[game_name]['player_name'],
                                turn_number=dictionary[game_name]['turn_number'],
+                               game_completed=dictionary[game_name].get('game_completed'),
                                time_stamp=time_stamp)
     game = games.Game(game_name=game_name, game_info=game_info)
     return game

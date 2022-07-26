@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from typing import Optional
+
 
 class TimeStamp(BaseModel):
     """A Timestamp for a turn"""
@@ -15,6 +17,7 @@ class GameInfo(BaseModel):
     """Information about a Game"""
     player_name: str
     turn_number: int
+    game_completed: Optional[bool]
     time_stamp: TimeStamp
 
 
@@ -25,18 +28,19 @@ class Game(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                        "game_name": "Eric's Barbarian Clash Game",
-                        "game_info": {
-                            "player_name": "Eric",
-                            "turn_number": 300,
-                            "time_stamp": {
-                                "year": 2022,
-                                "month": 7,
-                                "day": 21,
-                                "hour": 20,
-                                "minute": 33,
-                                "second": 28
-                            }
-                        }
+                "game_name": "Eric's Barbarian Clash Game",
+                "game_info": {
+                    "player_name": "Eric",
+                    "turn_number": 300,
+                    "game_completed": False,
+                    "time_stamp": {
+                        "year": 2022,
+                        "month": 7,
+                        "day": 21,
+                        "hour": 20,
+                        "minute": 33,
+                        "second": 28
                     }
+                }
+            }
         }
