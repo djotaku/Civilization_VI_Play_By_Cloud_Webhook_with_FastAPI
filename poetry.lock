@@ -222,6 +222,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "jinja-partials"
+version = "0.1.1"
+description = "Simple reuse of partial HTML page templates in the Jinja template language for Python web frameworks."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+jinja2 = "*"
+
+[[package]]
 name = "jinja2"
 version = "3.1.2"
 description = "A very fast and expressive template engine."
@@ -496,7 +507,7 @@ python-versions = ">=3.6,<4.0"
 
 [[package]]
 name = "urllib3"
-version = "1.26.10"
+version = "1.26.11"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "main"
 optional = false
@@ -537,7 +548,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "247d34815d2c32db0f3b9e33a8cb81a6d8f0f0608606249df52930d7e695fa4e"
+content-hash = "d05306911b87f5ca0ec7f1f085284832aca8c1aa820a31fb6ec2e3c051594f40"
 
 [metadata.files]
 aiofiles = []
@@ -561,6 +572,7 @@ hpack = []
 hyperframe = []
 idna = []
 iniconfig = []
+jinja-partials = []
 jinja2 = []
 jsonschema = []
 logbook = []
