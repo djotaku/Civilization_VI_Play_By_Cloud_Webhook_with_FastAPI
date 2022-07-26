@@ -7,7 +7,7 @@ from .site import homepage
 app = FastAPI(
     title="Eric's Civilization VI Play By Cloud and PYDT Webhook server",
     description="The server acts as an endpoint for PBC and PYDT JSON then sends it to the service you configure.",
-    version="1.1.0"
+    version="1.1.1"
 )
 
 app.include_router(turn_endpoints.router)
