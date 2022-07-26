@@ -153,6 +153,7 @@ class ListenerMatrixBot:
         response = requests.put(f"{self.url}/complete_game", params={'game_to_complete': game_to_complete})
         if response.status_code == 200:
             completion_status = response.json()
+            logging.debug(f"{completion_status=}")
             return f"Marked {completion_status['game_name']} as completed."
         elif response.status_code == 404:
             return f"{game_to_complete} was not found. Did you spell it correctly?"
