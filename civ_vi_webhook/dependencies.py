@@ -1,23 +1,26 @@
 import json
 from starlette.templating import Jinja2Templates
 from pathlib import Path
+import jinja_partials
+
 from civ_vi_webhook import api_logger
 from civ_vi_webhook.models import games
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
+jinja_partials.register_starlette_extensions(templates)
 
 
 def load_most_recent_games() -> dict:
     """Loads in the most recent games from the JSON file."""
-    games = {}
+    recent_games = {}
     try:
         with open('most_recent_games.json', 'r') as file:
-            games = json.load(file)
+            recent_games = json.load(file)
             api_logger.debug("current_games file loaded.")
     except FileNotFoundError:
         api_logger.warning("Prior JSON file not found. If this is your first run, this is OK.")
-    return games
+    return recent_games
 
 
 def load_player_names() -> dict:
@@ -53,5 +56,4 @@ def dict_to_game_model(dictionary: dict) -> games.Game:
                                turn_number=dictionary[game_name]['turn_number'],
                                game_completed=dictionary[game_name].get('game_completed'),
                                time_stamp=time_stamp)
-    game = games.Game(game_name=game_name, game_info=game_info)
-    return game
+    return games.Game(game_name=game_name, game_info=game_info)

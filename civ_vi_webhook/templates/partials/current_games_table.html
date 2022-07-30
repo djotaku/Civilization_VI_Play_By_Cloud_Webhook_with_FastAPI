@@ -1,0 +1,24 @@
+<table class="table is-striped sortable" hx-get="/current_games_table" hx-trigger="every 2s">
+                <thead>
+                <tr>
+                    <th>Game</th>
+                    <th>Next Player</th>
+                    <th>Turn Number</th>
+                    <th>Last Turn Date/Time</th>
+                    <th>Mark as Completed?</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for game in current_games %}
+                    <tr>
+                        <td>{{ game }}</td>
+                        <td>{{ current_games[game]['player_name'] }}</td>
+                        <td>{{ current_games[game]['turn_number'] }}</td>
+                        <td>{{ current_games[game]['time_stamp']['month'] }}-{{ current_games[game]['time_stamp']['day'] }}-{{ current_games[game]['time_stamp']['year'] }}
+                            {{ current_games[game]['time_stamp']['hour'] }}:
+                            {{ current_games[game]['time_stamp']['minute'] }}</td>
+                        <td><button class="button is-primary" hx-put="/complete_game?game_to_complete={{game}}" hx-trigger="click">Mark Completed</button></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>

@@ -1,0 +1,24 @@
+<table class="table is-striped sortable" hx-get="/completed_games_table" hx-trigger="every 2s">
+                <thead>
+                <tr>
+                    <th>Game</th>
+                    <th>Final Player</th>
+                    <th>Final Turn Number</th>
+                    <th>Final Turn Date/Time</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for game in completed_games %}
+                    <tr>
+                        <td>{{ game }}</td>
+                        <td>{{ completed_games[game]['player_name'] }}</td>
+                        <td>{{ completed_games[game]['turn_number'] }}</td>
+                        <td>{{ completed_games[game]['time_stamp']['month'] }}-
+                            {{ completed_games[game]['time_stamp']['day'] }}-
+                            {{ completed_games[game]['time_stamp']['year'] }}
+                            {{ completed_games[game]['time_stamp']['hour'] }}:
+                            {{ completed_games[game]['time_stamp']['minute'] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>

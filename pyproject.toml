@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "civilization_vi_play_by_cloud_webhook_with_fastapi"
-version = "1.1.1"
+version = "1.1.2"
 description = "Use FastAPI to create a Webhook site for Civilization VI PBEM games"
 authors = ["Eric Mesa <ericsbinaryworld@gmail.com>"]
 license = "GPLv3"
@@ -12,6 +12,7 @@ fastapi = "^0.79.0"
 uvicorn = "^0.18.2"
 requests = "^2.28.1"
 Jinja2 = "^3.1.2"
+jinja-partials = "^0.1.1"
 
 [tool.poetry.dev-dependencies]
 matrix-nio = "^0.19.0"
