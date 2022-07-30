@@ -17,7 +17,7 @@
                         <td>{{ current_games[game]['time_stamp']['month'] }}-{{ current_games[game]['time_stamp']['day'] }}-{{ current_games[game]['time_stamp']['year'] }}
                             {{ current_games[game]['time_stamp']['hour'] }}:
                             {{ current_games[game]['time_stamp']['minute'] }}</td>
-                        <td><button class="button is-primary" hx-put="/complete_game?game_to_complete={{game}}" hx-trigger="click">Mark Completed</button></td>
+                        <td><button class="button is-primary" hx-put="/complete_game?game_to_complete={{game}}" hx-trigger="click" hx-swap="none">Mark Completed</button></td>
                     </tr>
                 {% endfor %}
                 </tbody>
