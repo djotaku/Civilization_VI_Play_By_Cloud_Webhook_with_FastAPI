@@ -80,7 +80,7 @@ class ListenerMatrixBot:
         response = requests.get(f"{self.url}/total_number_of_games")
         total_number_of_games = response.json().get('total_games')
         if response_json := self.get_current_games(player_name):
-            response = json.load(response_json)
+            response = response_json
             games = response['games']
             return_text += self.format_response_text(games)
             logging.debug(return_text)
