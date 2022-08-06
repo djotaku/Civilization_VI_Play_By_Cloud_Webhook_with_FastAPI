@@ -11,7 +11,7 @@ More info below on why I came up with this code, the endpoints, and how to set i
 A quick tip - you'll want to use the /complete_game endpoint to mark games as completed when you're done in order not to clutter the list of games when you ask the system who you're waiting on to complete their turns (blame).
 Alternatively, I've implemented the index.html to display all the games the server knows about and you can hit the "complete" button on there to mark a game as completed.
 
-
+![index.html](https://github.com/djotaku/Civilization_VI_Play_By_Cloud_Webhook_with_FastAPI/blob/d893555a70a8e2445ed73c2c68f17406004cfd10/screenshots/index.png)
 
 ## Introduction
 
