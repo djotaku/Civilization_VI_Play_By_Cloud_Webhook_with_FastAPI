@@ -16,7 +16,7 @@ def sort_games() -> (dict, dict):
     current_games = {}
     completed_games = {}
     for game in sorted_by_timestamp:
-        if all_games[game].get("game_completed"):
+        if sorted_by_timestamp[game].get("game_completed"):
             completed_games[game] = sorted_by_timestamp[game]
         else:
             current_games[game] = sorted_by_timestamp[game]
