@@ -4,6 +4,15 @@ Using Python FastAPI creates a webhook endpoint for Civilization VI's Play By Cl
 
 I will accept Pull Requests to add other services: eg Discord, Telegram, Email, SMS, Mastodon, etc
 
+For instructions on how to use with Matrix (an open source Slack clone), see the [readme.md in the Maxtrix colder](https://github.com/djotaku/Civilization_VI_Play_By_Cloud_Webhook_with_FastAPI/tree/main/civ_vi_webhook/services/matrix)
+
+More info below on why I came up with this code, the endpoints, and how to set it up for yourself.
+
+A quick tip - you'll want to use the /complete_game endpoint to mark games as completed when you're done in order not to clutter the list of games when you ask the system who you're waiting on to complete their turns (blame).
+Alternatively, I've implemented the index.html to display all the games the server knows about and you can hit the "complete" button on there to mark a game as completed.
+
+
+
 ## Introduction
 
 February 2019, Firaxis added Play by Cloud to Civilization VI. Previously, you had to use a third party service for Play by Email (PBEM) like [Play Your Damn Turn](https://www.playyourdamnturn.com/). Recently, I started using Play by Cloud, but I found the Steam Alerts lacking. Luckily, the startup dialog tells you about webhooks. Unfortunately, when I searched the web, there were many implementations, but not much explanation that would help me develop my own solution. Most of what you will find out there involves setting up a webhook for integration with Discord and/or involves PHP or Javascript. I'm not that big on Discord. I have a Matrix server and I am a Python programmer. So I set about to figure this out on my own.
