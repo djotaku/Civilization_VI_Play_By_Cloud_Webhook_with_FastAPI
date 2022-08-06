@@ -1,43 +1,14 @@
 """Provide ability to listen for commands fromMatrix."""
 
 import asyncio
-from datetime import datetime
 import json
 import logging
-import math
 from nio import AsyncClient
 import requests
 
+from civ_vi_webhook.dependencies import determine_time_delta
+
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(asctime)s - %(message)s')
-
-
-def figure_out_base_sixty(number: int) -> (int, int):
-    """Figure out the next number up if I have more than 59 seconds or minutes."""
-    return (math.floor(number / 60), number % 60) if number > 59 else (0, number)
-
-
-def figure_out_days(number: int) -> (int, int):
-    """Figure out number of days given a number of hours."""
-    return (math.floor(number / 60), number % 60) if number > 23 else (0, number)
-
-
-def return_time(time_difference) -> (int, int, int, int):
-    """Return time in a useful manner."""
-    days = time_difference.days
-    seconds = time_difference.seconds
-    minutes, seconds = figure_out_base_sixty(seconds)
-    hours, minutes = figure_out_base_sixty(minutes)
-    days_plus, hours = figure_out_days(hours)
-    days += days_plus
-    return days, hours, minutes, seconds
-
-
-def determine_time_delta(year, month, day, hour, minute, second) -> str:
-    time_of_question = datetime.now()
-    time_of_turn = datetime(year, month, day, hour, minute, second)
-    difference = time_of_question - time_of_turn
-    days, hours, minutes, seconds = return_time(difference)
-    return f"It's been {days} days {hours} hours {minutes} minutes {seconds} seconds since the last turn."
 
 
 class ListenerMatrixBot:

@@ -8,11 +8,6 @@ from ..dependencies import templates, load_most_recent_games
 router = APIRouter(tags=['index'])
 
 
-def format_number(number: str) -> str:
-    """Take in a number than can potentially have a tens place and add a zero if needed"""
-    return f"{number:>2d}"
-
-
 def format_year_to_number(time_stamp: dict) -> int:
     """Take in a dict with time stamp and convert to a number"""
     return int(

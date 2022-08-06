@@ -19,6 +19,8 @@ class GameInfo(BaseModel):
     turn_number: int
     game_completed: Optional[bool]
     time_stamp: TimeStamp
+    turn_deltas: Optional[list]
+    average_turn_time: Optional[str]
 
 
 class Game(BaseModel):
