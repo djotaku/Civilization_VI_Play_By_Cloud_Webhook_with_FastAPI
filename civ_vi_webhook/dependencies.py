@@ -1,5 +1,6 @@
 import json
 import math
+from collections import OrderedDict
 from datetime import datetime
 
 from starlette.templating import Jinja2Templates
@@ -8,6 +9,7 @@ import jinja_partials
 
 from civ_vi_webhook import api_logger
 from civ_vi_webhook.models import games
+from civ_vi_webhook.site.homepage import format_year_to_number
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
@@ -95,3 +97,18 @@ def determine_time_delta(year, month, day, hour, minute, second) -> str:
     difference = time_of_question - time_of_turn
     days, hours, minutes, seconds = return_time(difference)
     return f"It's been {days} days {hours} hours {minutes} minutes {seconds} seconds since the last turn."
+
+
+def sort_games() -> (dict, dict):
+    """Sort the games into current and completed."""
+    all_games = load_most_recent_games()
+    sorted_by_timestamp = OrderedDict(
+        sorted(all_games.items(), key=lambda k: format_year_to_number(k[1]['time_stamp'])))
+    current_games = OrderedDict()
+    completed_games = OrderedDict()
+    for game in sorted_by_timestamp:
+        if sorted_by_timestamp[game].get("game_completed"):
+            completed_games[game] = sorted_by_timestamp[game]
+        else:
+            current_games[game] = sorted_by_timestamp[game]
+    return completed_games, current_games

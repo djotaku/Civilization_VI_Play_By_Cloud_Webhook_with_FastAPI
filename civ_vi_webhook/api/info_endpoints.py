@@ -2,7 +2,7 @@ import fastapi.responses
 from fastapi import APIRouter, Query
 from typing import Optional
 
-from ..dependencies import load_most_recent_games, dict_to_game_model
+from ..dependencies import load_most_recent_games, dict_to_game_model, sort_games
 from ..models import information_models
 
 router = APIRouter(tags=['Information Endpoints'])
@@ -38,5 +38,7 @@ def return_current_games(player_to_blame: Optional[str] = Query(None,
 @router.get('/total_number_of_games', response_model=information_models.GameCounts)
 def return_total_number_of_games():
     """Returns the total number of games the API knows about."""
-    current_games = load_most_recent_games()
-    return {'total_games': len(current_games)}
+    all_games = load_most_recent_games()
+    completed_games, current_games = sort_games()
+    return {'total_games': len(all_games), 'current_games': len(current_games),
+            "completed_games": len(completed_games)}

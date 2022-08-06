@@ -82,7 +82,7 @@ class ListenerMatrixBot:
         number_of_games = 0
         return_text = ""
         response = requests.get(f"{self.url}/total_number_of_games")
-        total_number_of_games = response.json().get('total_games')
+        total_number_of_current_games = response.json().get('current_games')
         if response_json := self.get_current_games(player_name):
             response = response_json
             games = response['games']
@@ -90,14 +90,14 @@ class ListenerMatrixBot:
             logging.debug(return_text)
             number_of_games = len(games)
         if 0 < number_of_games < 2:
-            return f"There is {number_of_games} game out of {total_number_of_games} waiting for {player_name} " \
+            return f"There is {number_of_games} game out of {total_number_of_current_games} waiting for {player_name} " \
                    f"to take their turn:\n" + return_text
         elif number_of_games > 1:
-            if number_of_games == total_number_of_games:
-                return f"There are {number_of_games} games out of {total_number_of_games} waiting for {player_name} " \
+            if number_of_games == total_number_of_current_games:
+                return f"There are {number_of_games} games out of {total_number_of_current_games} waiting for {player_name} " \
                        f"to take their turn:\n" + return_text + "It's all on you!! 😅"
             else:
-                return f"There are {number_of_games} games out of {total_number_of_games} waiting for {player_name} " \
+                return f"There are {number_of_games} games out of {total_number_of_current_games} waiting for {player_name} " \
                        f"to take their turn:\n" + return_text
         else:
             return f"There aren't any games waiting for {player_name}. Great job!"

@@ -1,9 +1,7 @@
-import logging
-from collections import OrderedDict
 from fastapi import APIRouter
 from starlette.requests import Request
 
-from ..dependencies import templates, load_most_recent_games
+from ..dependencies import templates, sort_games
 
 router = APIRouter(tags=['index'])
 
@@ -12,23 +10,6 @@ def format_year_to_number(time_stamp: dict) -> int:
     """Take in a dict with time stamp and convert to a number"""
     return int(
         f"{time_stamp['year']}{time_stamp['month']:0>2d}{time_stamp['day']:0>2d}{time_stamp['hour']:0>2d}{time_stamp['minute']:0>2d}{time_stamp['second']:0>2d}")
-
-
-def sort_games() -> (dict, dict):
-    """Sort the games into current and completed."""
-    all_games = load_most_recent_games()
-    sorted_by_timestamp = OrderedDict(
-        sorted(all_games.items(), key=lambda k: format_year_to_number(k[1]['time_stamp'])))
-    current_games = OrderedDict()
-    completed_games = OrderedDict()
-    for game in sorted_by_timestamp:
-        if sorted_by_timestamp[game].get("game_completed"):
-            completed_games[game] = sorted_by_timestamp[game]
-        else:
-            current_games[game] = sorted_by_timestamp[game]
-    # logging.debug(f"{current_games=}")
-    # logging.debug(completed_games)
-    return completed_games, current_games
 
 
 @router.get('/')
