@@ -6,12 +6,6 @@ from ..dependencies import templates, sort_games
 router = APIRouter(tags=['index'])
 
 
-def format_year_to_number(time_stamp: dict) -> int:
-    """Take in a dict with time stamp and convert to a number"""
-    return int(
-        f"{time_stamp['year']}{time_stamp['month']:0>2d}{time_stamp['day']:0>2d}{time_stamp['hour']:0>2d}{time_stamp['minute']:0>2d}{time_stamp['second']:0>2d}")
-
-
 @router.get('/')
 def index(request: Request):
     completed_games, current_games = sort_games()

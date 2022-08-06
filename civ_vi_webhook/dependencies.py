@@ -9,7 +9,6 @@ import jinja_partials
 
 from civ_vi_webhook import api_logger
 from civ_vi_webhook.models import games
-from civ_vi_webhook.site.homepage import format_year_to_number
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
@@ -112,3 +111,9 @@ def sort_games() -> (dict, dict):
         else:
             current_games[game] = sorted_by_timestamp[game]
     return completed_games, current_games
+
+
+def format_year_to_number(time_stamp: dict) -> int:
+    """Take in a dict with time stamp and convert to a number"""
+    return int(
+        f"{time_stamp['year']}{time_stamp['month']:0>2d}{time_stamp['day']:0>2d}{time_stamp['hour']:0>2d}{time_stamp['minute']:0>2d}{time_stamp['second']:0>2d}")
