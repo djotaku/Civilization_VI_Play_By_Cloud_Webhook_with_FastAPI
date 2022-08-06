@@ -66,7 +66,7 @@ class ListenerMatrixBot:
         """Format the list of current games for display in Matrix server."""
         return_text = "Here is a list of the games currently known about on the server:\n"
         if response_json := self.get_current_games():
-            response = json.load(response_json)
+            response = response_json
             games = response['games']
             return_text += self.format_response_text(games)
             logging.debug(return_text)
