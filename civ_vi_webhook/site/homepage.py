@@ -20,6 +20,7 @@ def sort_games() -> (dict, dict):
             completed_games[game] = sorted_by_timestamp[game]
         else:
             current_games[game] = sorted_by_timestamp[game]
+    logging.debug(completed_games)
     return completed_games, current_games
 
 
