@@ -50,6 +50,8 @@ This is why I have two different endpoints, one for Play by Cloud and one for Pl
 
 All of this is documented in the code and by visiting the URL where you are running this code /docs eg: mycivilizationwebhooks.com/docs . Here is a brief overview:
 
+![docs](https://github.com/djotaku/Civilization_VI_Play_By_Cloud_Webhook_with_FastAPI/blob/e0065bfe87022c914159eb158bf24aae92837b94/screenshots/docs.png)
+
 If we assume your URL is mycivilizationwebhooks.com, then:
 
 mycivilizationwebhooks.com/webhook - this is the endpoint to enter into Civ VI. It will create a message after each turn and send it to Matrix
@@ -58,7 +60,11 @@ mycivilizationwebhooks.com/pydt - this is the endpoint to enter into Play Your D
 
 mycivilizationwebhooks.com/current_games - will return all the games the program knows about
 
-mycivilizationwebhooks.com/delete_game - it will delete the game you pass to it. Say, when you're done with the game and no longer want to track it.
+mycivilizationwebhooks.com/total_number_of_games - will return sums of the games
+
+mycivilizationwebhooks.com/delete_game - it will delete the game you pass to it. Say, if everyone decided not to play the game anymore.
+
+mycivilizationwebhooks.com/complete_game - mark a game as complete so it no longer show up in current games or blames
 
 ## How to use this code on your own
 
