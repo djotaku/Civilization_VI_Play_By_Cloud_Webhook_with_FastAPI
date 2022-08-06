@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 import fastapi.responses
-from fastapi import HTTPException, APIRouter
+from fastapi import APIRouter
 from starlette import status
 
 from civ_vi_webhook import api_logger
