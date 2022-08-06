@@ -25,6 +25,9 @@ If you happen to already be using (or prefer) Play Your Damn Turn (PYDT), they u
 
 ```JSON
 {
+"value1": "the name of your game",
+"value2": "the player's Steam name",
+"value3": "the turn number",
 "gameName": "the name of your game",
 "userName": "the user's Steam username",
 "round": 0,
@@ -32,7 +35,7 @@ If you happen to already be using (or prefer) Play Your Damn Turn (PYDT), they u
 "leaderName": "the name of your civ leader (and for some of them the attribute)"
 }
 ```
-This is why I have two different endpoints, one for Play by Cloud and one for Play Your Damn Turn (PYDT). Also note that the PBC turn number is a string while the PYDT JSON is an integer.
+This is why I have two different endpoints, one for Play by Cloud and one for Play Your Damn Turn (PYDT).
 
 ## Endpoints
 
@@ -83,8 +86,3 @@ python -m civ_vi_webhook.services.matrix.matrix_bot_listener.py
 Set up Nginx or Ampache to serve requests to your URL to uvicorn's port.
 
 Set up Civilization VI (for Play by Cloud) or Play Your Damn Turn to point to the appropriate endpoints.
-
-notes on steps for later:
-  - include a sample nginx config??
-if end up making a Python package:
-  -the steps needed there - some of the above about be covered by the package
