@@ -68,6 +68,7 @@ class ListenerMatrixBot:
         if response_json := self.get_current_games():
             response = response_json
             games = response['games']
+            logging.debug(f"{games=}")
             return_text += self.format_response_text(games)
             logging.debug(return_text)
         else:
