@@ -71,7 +71,11 @@ def figure_out_base_sixty(number: int) -> (int, int):
 
 def figure_out_days(number: int) -> (int, int):
     """Figure out number of days given a number of hours."""
-    return (math.floor(number / 60), number % 60) if number > 23 else (0, number)
+    if number <= 23:
+        return 0, number
+    days = math.floor(number / 24)
+    hours = number - (days * 24)
+    return days, hours
 
 
 def return_time(time_difference) -> (int, int, int, int):

@@ -42,7 +42,9 @@ class Game(BaseModel):
                         "hour": 20,
                         "minute": 33,
                         "second": 28
-                    }
+                    },
+                    "turn_deltas": [24, 6677, 34],
+                    "average_turn_time": "0 days, 0 hours, 4 min, 12s."
                 }
             }
         }
