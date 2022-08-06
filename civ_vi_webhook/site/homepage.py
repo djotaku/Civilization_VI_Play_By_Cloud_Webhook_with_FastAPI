@@ -16,7 +16,7 @@ def format_number(number: str) -> str:
 def format_year_to_number(time_stamp: dict) -> int:
     """Take in a dict with time stamp and convert to a number"""
     return int(
-        f"{time_stamp['year']}{time_stamp['month']:>2d}{time_stamp['day']:>2d}{time_stamp['hour']:>2d}{time_stamp['minute']:>2d}{time_stamp['second']:>2d}")
+        f"{time_stamp['year']}{time_stamp['month']:0>2d}{time_stamp['day']:0>2d}{time_stamp['hour']:0>2d}{time_stamp['minute']:0>2d}{time_stamp['second']:0>2d}")
 
 
 def sort_games() -> (dict, dict):
