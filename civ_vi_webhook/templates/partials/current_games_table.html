@@ -5,6 +5,7 @@
                     <th>Next Player</th>
                     <th>Turn Number</th>
                     <th>Last Turn Date/Time</th>
+                    <th>Average Turn Time</th>
                     <th>Mark as Completed?</th>
                 </tr>
                 </thead>
@@ -17,6 +18,7 @@
                         <td>{{ current_games[game]['time_stamp']['month'] }}-{{ current_games[game]['time_stamp']['day'] }}-{{ current_games[game]['time_stamp']['year'] }}
                             {{ current_games[game]['time_stamp']['hour'] }}:
                             {{ current_games[game]['time_stamp']['minute'] }}</td>
+                        <td>{{ current_games[game].get('average_turn_time') }}</td>
                         <td><button class="button is-primary" hx-put="/complete_game?game_to_complete={{game}}" hx-trigger="click" hx-swap="none">Mark Completed</button></td>
                     </tr>
                 {% endfor %}
