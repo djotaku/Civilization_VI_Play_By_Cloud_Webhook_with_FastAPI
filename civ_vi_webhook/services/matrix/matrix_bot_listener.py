@@ -55,9 +55,12 @@ class ListenerMatrixBot:
             turn_number = game['game_info'].get('turn_number')
             return_text += f"{game_name} awaiting turn {turn_number} by {player}. "
             if game['game_info'].get('time_stamp'):
-                time_text = determine_time_delta(game['time_stamp']['year'], game['time_stamp']['month'],
-                                                 game['time_stamp']['day'], game['time_stamp']['hour'],
-                                                 game['time_stamp']['minute'], game['time_stamp']['second'])
+                time_text = determine_time_delta(game['game_info']['time_stamp']['year'],
+                                                 game['game_info']['time_stamp']['month'],
+                                                 game['game_info']['time_stamp']['day'],
+                                                 game['game_info']['time_stamp']['hour'],
+                                                 game['game_info']['time_stamp']['minute'],
+                                                 game['game_info']['time_stamp']['second'])
                 return_text += time_text
             return_text += '\n'
         return return_text
