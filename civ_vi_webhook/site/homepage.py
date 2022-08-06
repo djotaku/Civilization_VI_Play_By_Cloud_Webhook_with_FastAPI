@@ -13,8 +13,8 @@ def sort_games() -> (dict, dict):
     all_games = load_most_recent_games()
     sorted_by_timestamp = OrderedDict(sorted(all_games.items(), key=lambda k: int(
         f"{k[1]['time_stamp']['year']}{k[1]['time_stamp']['month']}{k[1]['time_stamp']['day']}{k[1]['time_stamp']['hour']}{k[1]['time_stamp']['minute']}{k[1]['time_stamp']['second']}")))
-    current_games = {}
-    completed_games = {}
+    current_games = OrderedDict()
+    completed_games = OrderedDict()
     for game in sorted_by_timestamp:
         if sorted_by_timestamp[game].get("game_completed"):
             completed_games[game] = sorted_by_timestamp[game]
