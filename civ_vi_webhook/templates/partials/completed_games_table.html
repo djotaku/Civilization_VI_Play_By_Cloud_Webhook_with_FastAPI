@@ -1,4 +1,4 @@
-<table class="table is-striped sortable" hx-get="/completed_games_table" hx-trigger="every 5s">
+<table class="table is-striped sortable" hx-get="/completed_games_table" hx-trigger="every 15s ">
     <thead>
     <tr>
         <th>Game</th>
@@ -25,6 +25,7 @@
                 <td>{{ completed_games[game].get('winner') }}</td>
             {% else %}
                 <td>
+                <form hx-put="/set_winner?game={{ game }}" hx-swap="none">
                     <div class="field has-addons">
                         <div class="control is-expanded">
                             <div class="select is-fullwidth">
@@ -36,9 +37,10 @@
                             </div>
                         </div>
                         <div class="control">
-                            <button type="submit" class="button is-primary" hx-put="/set_winner" hx-vals='js:{"game": "{{ game }}", "winner": document.querySelector("Winner")}' hx-include="[name='Winner']" hx-trigger="click" hx-swap="none">Choose</button>
+                            <button type="submit" class="button is-primary" name="winner_button" >Choose</button>
                         </div>
                     </div>
+                </form>
                 </td>
             {% endif %}
         </tr>

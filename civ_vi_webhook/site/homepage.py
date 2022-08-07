@@ -20,9 +20,11 @@ def get_potential_winners_list() -> list:
 @router.get('/')
 def index(request: Request):
     completed_games, current_games = sort_games()
+    potential_winners = get_potential_winners_list()
     return templates.TemplateResponse('index.html', {'request': request,
                                                      "current_games": current_games,
-                                                     "completed_games": completed_games})
+                                                     "completed_games": completed_games,
+                                                     "potential_winners": potential_winners})
 
 
 @router.get('/current_games_table')

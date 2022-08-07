@@ -45,15 +45,12 @@ def complete_game(game_to_complete: str = Query(None,
 
 
 @router.put('/set_winner', status_code=status.HTTP_200_OK, responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
-def set_winner(request: Request,
-               game: str = Query(None, title="Game",
-                                 description="The name of the game to set the winner in"),
-               winner: str = Query(None, title="Winner",
-                                   description="The name of the winner of the game"),
-               ):
-    print(request.headers)
-    print(request.query_params)
-    print(request.path_params)
+async def set_winner(request: Request,
+                     game: str = Query(None, title="Game",
+                                       description="The name of the game to set the winner in"),
+                     ):
+    form_data = await request.form()
+    winner = form_data['Winner']
     current_games = load_most_recent_games()
     if game not in current_games.keys():
         return fastapi.responses.JSONResponse(status_code=status.HTTP_404_NOT_FOUND,

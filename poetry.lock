@@ -416,6 +416,17 @@ tomli = ">=1.0.0"
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
 
 [[package]]
+name = "python-multipart"
+version = "0.0.5"
+description = "A streaming multipart parser for Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+six = ">=1.4.0"
+
+[[package]]
 name = "python-socks"
 version = "2.0.3"
 description = "Core proxy (SOCKS4, SOCKS5, HTTP tunneling) functionality for Python"
@@ -548,7 +559,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "d05306911b87f5ca0ec7f1f085284832aca8c1aa820a31fb6ec2e3c051594f40"
+content-hash = "b30e57b7520182d906137bec3a4194737cc00fca323abfc2d54c83d3785ff803"
 
 [metadata.files]
 aiofiles = [
@@ -856,6 +867,7 @@ pytest = [
     {file = "pytest-7.1.2-py3-none-any.whl", hash = "sha256:13d0e3ccfc2b6e26be000cb6568c832ba67ba32e719443bfe725814d3c42433c"},
     {file = "pytest-7.1.2.tar.gz", hash = "sha256:a06a0425453864a270bc45e71f783330a7428defb4230fb5e6a731fde06ecd45"},
 ]
+python-multipart = []
 python-socks = [
     {file = "python-socks-2.0.3.tar.gz", hash = "sha256:e3a9ca8e554733862ce4d8ce1d10efb480fd3a3acdafd03393943ec00c98ba8a"},
     {file = "python_socks-2.0.3-py3-none-any.whl", hash = "sha256:950723f27d2cf401e193a9e0a0d45baab848341298f5b397d27fda0c4635e9a9"},
