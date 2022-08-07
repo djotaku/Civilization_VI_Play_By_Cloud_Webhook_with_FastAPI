@@ -27,8 +27,8 @@
                 <td>
                     <div class="field has-addons">
                         <div class="control is-expanded">
-                            <div class="select is-fullwidth">
-                                <select name="Winner" >
+                            <div class="select is-fullwidth" name="Winner">
+                                <select name="Winner" id="Winner">
                                     {% for winner in potential_winners %}
                                         <option value="{{ winner }}">{{ winner }}</option>
                                     {% endfor %}
@@ -36,7 +36,7 @@
                             </div>
                         </div>
                         <div class="control">
-                            <button type="submit" class="button is-primary" hx-put="/set_winner?game={{game}}&winner=" hx-trigger="click" hx-swap="none">Choose</button>
+                            <button type="submit" class="button is-primary" hx-put="/set_winner?game={{game}}" hx-include="[Winner='winner']" hx-trigger="click" hx-swap="none">Choose</button>
                         </div>
                     </div>
                 </td>
