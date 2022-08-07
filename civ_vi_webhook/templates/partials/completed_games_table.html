@@ -36,7 +36,7 @@
                             </div>
                         </div>
                         <div class="control">
-                            <button type="submit" class="button is-primary">Choose</button>
+                            <button type="submit" class="button is-primary" hx-put="/set_winner?game={{game}}&winner=" hx-trigger="click" hx-swap="none">Choose</button>
                         </div>
                     </div>
                 </td>
