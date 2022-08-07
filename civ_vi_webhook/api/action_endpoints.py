@@ -1,5 +1,5 @@
 import fastapi.responses
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Query, status, Request
 import json
 
 from civ_vi_webhook import api_logger
@@ -45,10 +45,15 @@ def complete_game(game_to_complete: str = Query(None,
 
 
 @router.put('/set_winner', status_code=status.HTTP_200_OK, responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
-def set_winner(game: str = Query(None, title="Game",
+def set_winner(request: Request,
+               game: str = Query(None, title="Game",
                                  description="The name of the game to set the winner in"),
                winner: str = Query(None, title="Winner",
-                                   description="The name of the winner of the game")):
+                                   description="The name of the winner of the game"),
+               ):
+    print(request.headers)
+    print(request.query_params)
+    print(request.path_params)
     current_games = load_most_recent_games()
     if game not in current_games.keys():
         return fastapi.responses.JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
