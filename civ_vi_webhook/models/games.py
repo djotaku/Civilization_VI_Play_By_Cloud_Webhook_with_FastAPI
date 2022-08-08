@@ -21,6 +21,7 @@ class GameInfo(BaseModel):
     time_stamp: TimeStamp
     turn_deltas: Optional[list]
     average_turn_time: Optional[str]
+    winner: Optional[str]
 
 
 class Game(BaseModel):
@@ -44,7 +45,8 @@ class Game(BaseModel):
                         "second": 28
                     },
                     "turn_deltas": [24, 6677, 34],
-                    "average_turn_time": "0 days, 0 hours, 4 min, 12s."
+                    "average_turn_time": "0 days, 0 hours, 4 min, 12s.",
+                    "winner": "Eric"
                 }
             }
         }
