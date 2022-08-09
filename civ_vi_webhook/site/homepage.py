@@ -1,5 +1,6 @@
 import logging
 
+import fastapi.responses
 from fastapi import APIRouter
 from starlette.requests import Request
 
@@ -25,6 +26,11 @@ def index(request: Request):
                                                      "current_games": current_games,
                                                      "completed_games": completed_games,
                                                      "potential_winners": potential_winners})
+
+
+@router.get('/favicon.ico')
+def favicon():
+    return fastapi.responses.RedirectResponse(url="/static/favicon.ico")
 
 
 @router.get('/current_games_table')
