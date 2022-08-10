@@ -1,5 +1,3 @@
-import logging
-
 import fastapi.responses
 from fastapi import APIRouter
 from starlette.requests import Request
@@ -13,7 +11,6 @@ def get_potential_winners_list() -> list:
     """Get a list of potential selections for winners"""
     players = load_player_names()
     winners = [f"{key} (aka {value})" for key, value in players['preferred_names'].items()]
-    # logging.debug(winners)
     winners.extend(("Other Player", "Computer Player"))
     return winners
 
