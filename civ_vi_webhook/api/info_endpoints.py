@@ -1,8 +1,10 @@
-import fastapi.responses
-from fastapi import APIRouter, Query
 from typing import Optional
 
-from ..dependencies import load_most_recent_games, dict_to_game_model, sort_games
+import fastapi.responses
+from fastapi import APIRouter, Query
+
+from ..dependencies import (dict_to_game_model, load_most_recent_games,
+                            sort_games)
 from ..models import information_models
 
 router = APIRouter(tags=['Information Endpoints'])

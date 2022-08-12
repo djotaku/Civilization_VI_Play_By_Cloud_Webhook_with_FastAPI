@@ -1,10 +1,12 @@
-import fastapi.responses
-from fastapi import APIRouter, Query, status, Request
 import json
 
+import fastapi.responses
+from fastapi import APIRouter, Query, Request, status
+
 from civ_vi_webhook import api_logger
-from ..dependencies import load_most_recent_games, dict_to_game_model
-from ..models.action_models import DeletedGame, CompletedGame, Error
+
+from ..dependencies import dict_to_game_model, load_most_recent_games
+from ..models.action_models import CompletedGame, DeletedGame, Error
 
 router = APIRouter(tags=['Action Endpoints'])
 

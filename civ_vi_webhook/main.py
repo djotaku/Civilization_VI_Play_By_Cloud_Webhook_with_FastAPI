@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from starlette.staticfiles import StaticFiles
 
 from . import api_logger
-from .api import turn_endpoints, info_endpoints, action_endpoints
+from .api import action_endpoints, info_endpoints, turn_endpoints
 from .site import homepage
 
 app = FastAPI(

@@ -1,6 +1,6 @@
 # Matrix Service
 
-This presumes that you've created an account for the Matrix bot and invited it to the room specified in the matrix.conf. 
+This presumes that you've created an account for the Matrix bot and invited it to the room specified in the matrix.conf.
 
 You will also need to sign in as the bot and accept the invite.
 

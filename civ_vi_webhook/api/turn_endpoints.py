@@ -6,9 +6,11 @@ from fastapi import APIRouter
 from starlette import status
 
 from civ_vi_webhook import api_logger
-from civ_vi_webhook.dependencies import load_player_names, figure_out_days, figure_out_base_sixty
+from civ_vi_webhook.dependencies import (figure_out_base_sixty,
+                                         figure_out_days, load_player_names)
 from civ_vi_webhook.models.turns import CivTurnInfo, PYDTTurnInfo
 from civ_vi_webhook.services.matrix import matrix_bot_sender as matrix_bot
+
 from ..dependencies import load_most_recent_games
 
 router = APIRouter(tags=['Turn Endpoints'])

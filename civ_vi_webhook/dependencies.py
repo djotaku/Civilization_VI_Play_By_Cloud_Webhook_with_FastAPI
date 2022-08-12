@@ -2,10 +2,10 @@ import json
 import math
 from collections import OrderedDict
 from datetime import datetime
-
-from starlette.templating import Jinja2Templates
 from pathlib import Path
+
 import jinja_partials
+from starlette.templating import Jinja2Templates
 
 from civ_vi_webhook import api_logger
 from civ_vi_webhook.models import games

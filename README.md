@@ -68,7 +68,7 @@ mycivilizationwebhooks.com/complete_game - mark a game as complete so it no long
 
 ## How to use this code on your own
 
-I have switched to using Poetry to develop and run this project. 
+I have switched to using Poetry to develop and run this project.
 
 Pre-requirements
 - poetry (installed via your OS's package manager)
@@ -82,7 +82,7 @@ Install the dependencies:
 poetry install
 ```
 
-Copy the sample_matrix.conf file to the main directory of the program. (The same directory with the server and listener bash scripts) Edit the values to match those of a user you have created on the Matrix server to be a bot. 
+Copy the sample_matrix.conf file to the main directory of the program. (The same directory with the server and listener bash scripts) Edit the values to match those of a user you have created on the Matrix server to be a bot.
 
 Using 2 terminals or a terminal muxer like screen or tmux, use one window for the server script and one for the listener script.
 
@@ -92,7 +92,7 @@ poetry shell
 uvicorn civ_vi_webhook.main:app --port 5000 --host 0.0.0.0 --reload
 ```
 
-in the other one start the Matrix listener bot to listen for commands in Matrix: 
+in the other one start the Matrix listener bot to listen for commands in Matrix:
 ```bash
 poetry shell
 python -m civ_vi_webhook.services.matrix.matrix_bot_listener.py

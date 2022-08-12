@@ -1,9 +1,10 @@
+from unittest.mock import Mock, patch
+
 from fastapi.testclient import TestClient
-from unittest.mock import patch, Mock
 
 import civ_vi_webhook.api.turn_endpoints
-from civ_vi_webhook.main import app
 import civ_vi_webhook.main
+from civ_vi_webhook.main import app
 
 client = TestClient(app)
 matrix_bot_mock = Mock()

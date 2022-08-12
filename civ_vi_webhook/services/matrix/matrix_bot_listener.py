@@ -3,8 +3,9 @@
 import asyncio
 import json
 import logging
-from nio import AsyncClient
+
 import requests
+from nio import AsyncClient
 
 from civ_vi_webhook.dependencies import determine_time_delta
 

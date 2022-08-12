@@ -2,7 +2,7 @@ import fastapi.responses
 from fastapi import APIRouter
 from starlette.requests import Request
 
-from ..dependencies import templates, sort_games, load_player_names
+from ..dependencies import load_player_names, sort_games, templates
 
 router = APIRouter(tags=['index'])
 
