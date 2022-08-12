@@ -10,7 +10,7 @@ from .site import homepage
 app = FastAPI(
     title="Eric's Civilization VI Play By Cloud and PYDT Webhook server",
     description="The server acts as an endpoint for PBC and PYDT JSON then sends it to the service you configure.",
-    version="1.1.7"
+    version="1.1.8"
 )
 
 BASE_DIR = Path(__file__).resolve().parent
