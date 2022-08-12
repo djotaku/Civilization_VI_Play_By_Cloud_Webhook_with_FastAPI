@@ -17,3 +17,8 @@ repos:
   rev: v2.32.1
   hooks:
     -   id: pyupgrade
+-   repo: https://github.com/pycqa/flake8
+    rev: 6027577d325b0dd8bf1e465ebd29b71b5f0d005b
+    hooks:
+    -   id: flake8
+        exclude: tests

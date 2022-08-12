@@ -3,7 +3,6 @@ from pathlib import Path
 from fastapi import FastAPI
 from starlette.staticfiles import StaticFiles
 
-from . import api_logger
 from .api import action_endpoints, info_endpoints, turn_endpoints
 from .site import homepage
 
