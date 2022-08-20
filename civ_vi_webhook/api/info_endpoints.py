@@ -3,8 +3,6 @@ from typing import Optional
 import fastapi.responses
 from fastapi import APIRouter, Query
 
-from ..dependencies import (load_most_recent_games,
-                            sort_games)
 from ..models.api import information_models, games
 from ..services.db import game_service, user_service
 
@@ -30,9 +28,21 @@ async def return_current_games(player_to_blame: Optional[str] = Query(None,
                                                   content={"error": f"{player_to_blame} does not exist"})
     else:
         current_games = await game_service.get_current_games()
-    print(current_games)
+    games_to_return = await db_model_to_game_model(current_games)
+    return {"games": games_to_return}
+
+
+@router.get('/completed_games', response_model=information_models.CurrentGames)
+async def return_completed_games():
+    completed_games = await game_service.get_completed_games()
+    games_to_return = await db_model_to_game_model(completed_games)
+    print(games_to_return)
+    return {"games": games_to_return}
+
+
+async def db_model_to_game_model(these_games):
     games_to_return = []
-    for game in current_games:
+    for game in these_games:
         time_stamp = games.TimeStamp(year=game.game_info.time_stamp.year,
                                      month=game.game_info.time_stamp.month,
                                      day=game.game_info.time_stamp.day,
@@ -47,17 +57,22 @@ async def return_current_games(player_to_blame: Optional[str] = Query(None,
                                    winner=game.game_info.winner)
         this_game = games.Game(game_name=game.game_name, game_info=game_info)
         games_to_return.append(this_game)
+    return games_to_return
+
+
+@router.get('/all_games', response_model=information_models.CurrentGames)
+async def get_all_games():
+    all_games = await game_service.get_all_games()
+    games_to_return = await db_model_to_game_model(all_games)
     return {"games": games_to_return}
 
 
 @router.get('/total_number_of_games', response_model=information_models.GameCounts)
 async def return_total_number_of_games():
     """Returns the total number of games the API knows about."""
-    completed_games, current_games = sort_games()
     total_games = await game_service.get_total_game_count()
     current_games = await game_service.get_current_games_count()
     completed_games = await game_service.get_completed_games_count()
     return {'total_games': total_games, 'current_games': current_games,
             "completed_games": completed_games}
 
-# TODO: add endpoints for all games and completed games

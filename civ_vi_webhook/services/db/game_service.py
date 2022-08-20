@@ -43,6 +43,13 @@ async def add_game_to_current_games(game_id):
         await current_games.save()
 
 
+async def remove_game_from_current_games(game_id):
+    """Remove a game ID from the current games"""
+    current_games = await CurrentGames.find_one()
+    current_games.current_games.remove(game_id)
+    await current_games.save()
+
+
 async def get_current_games(player_id: str = None) -> list[Game]:
     """Get the current games (perhaps waiting on a specific player)."""
     current_games_document = await CurrentGames.find_one()
@@ -51,8 +58,12 @@ async def get_current_games(player_id: str = None) -> list[Game]:
     return [game for game in games if str(game.game_info.next_player_id) == player_id] if player_id else games
 
 
-async def create_completed_games_document():
-    completed_games = CompletedGames(completed_games=[])
+async def create_completed_games_document(initial_game_id=None):
+    if initial_game_id:
+        completed_games = CompletedGames(completed_games=[initial_game_id])
+        await remove_game_from_current_games(initial_game_id)
+    else:
+        completed_games = CompletedGames(completed_games=[])
     await completed_games.save()
 
 
@@ -70,13 +81,14 @@ async def update_game(game_name: str, player_id, turn_number: int, time_stamp: d
     await game.save()
 
 
-async def add_game_to_finished_games(game_id: str):
-    # TODO: also remove it from CurrentGames
+async def add_game_to_finished_games(game_id):
     completed_games = await CompletedGames.find_one()
     if not completed_games:
-        await create_completed_games_document()
-    completed_games.completed_games.append(game_id)
-    await completed_games.save()
+        await create_completed_games_document(game_id)
+    else:
+        completed_games.completed_games.append(game_id)
+        await completed_games.save()
+        await remove_game_from_current_games(game_id)
 
 
 async def mark_game_completed(game_name: str):
@@ -104,3 +116,15 @@ async def get_completed_games_count() -> int:
         await create_completed_games_document()
         return 0
     return await Game.find(In(Game.id, completed_games_document.completed_games)).count()
+
+
+async def get_completed_games() -> list[Game]:
+    """Get the current games (perhaps waiting on a specific player)."""
+    completed_games_document = await CompletedGames.find_one()
+    games = await Game.find(In(Game.id, completed_games_document.completed_games)).to_list()
+    return games
+
+
+async def get_all_games() -> list[Game]:
+    """Get all the games in the database"""
+    return await Game.find().to_list()
