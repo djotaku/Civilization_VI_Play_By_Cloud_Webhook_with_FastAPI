@@ -20,10 +20,13 @@ async def create_players():
         # only have been able to support Matrix (as opposed to Discord or other services)
         for steam_username, matrix_username in player_identities["matrix"].items():
             index_name = player_identities.get("preferred_names").get(steam_username)
-            print(f"{steam_username=} known as {matrix_username=} and {index_name=}")
+            # print(f"{steam_username=} known as {matrix_username=} and {index_name=}")
             await create_user(steam_username, matrix_username=matrix_username, index_name=index_name)
 
 
+async def main():
+    await connect_db()
+    await create_players()
+
 if __name__ == '__main__':
-    asyncio.run(connect_db())
-    asyncio.run(create_players())
+    asyncio.run(main())
