@@ -95,7 +95,13 @@ async def mark_game_completed(game_name: str):
     game = await Game.find_one(Game.game_name == game_name)
     game.game_info.game_completed = True
     await game.save()
-    await add_game_to_finished_games(str(game.id))
+    await add_game_to_finished_games(game.id)
+
+
+async def add_winner_to_game(game_name: str, winner: str):
+    game = await Game.find_one(Game.game_name == game_name)
+    game.game_info.winner = winner
+    await game.save()
 
 
 async def get_total_game_count() -> int:
@@ -128,3 +134,14 @@ async def get_completed_games() -> list[Game]:
 async def get_all_games() -> list[Game]:
     """Get all the games in the database"""
     return await Game.find().to_list()
+
+
+async def delete_game(game_name: str) -> bool:
+    """Delete a game from the database"""
+    game_exists = await check_for_game(game_name)
+    if game_exists:
+        game_to_delete = await Game.find_one(Game.game_name == game_name)
+        await game_to_delete.delete()
+        return True
+    else:
+        return False

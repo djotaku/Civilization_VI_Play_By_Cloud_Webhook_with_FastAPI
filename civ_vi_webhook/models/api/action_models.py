@@ -4,7 +4,7 @@ from .games import Game
 
 
 class DeletedGame(BaseModel):
-    deleted_game: Game
+    deleted_game_name: str
 
 
 class CompletedGame(BaseModel):
