@@ -2,8 +2,8 @@ import beanie
 from typing import Optional
 
 import pydantic
+from beanie import PydanticObjectId
 from pydantic import BaseModel
-
 
 class TimeStamp(BaseModel):
     """A Timestamp for a turn"""
@@ -17,7 +17,7 @@ class TimeStamp(BaseModel):
 
 class GameInfo(BaseModel):
     """Information about a Game"""
-    next_player_id: str = pydantic.Field(description="The MongoDB ID of the player whose turn it now is.")
+    next_player_id: PydanticObjectId = pydantic.Field(description="The MongoDB ID of the player whose turn it now is.")
     turn_number: int
     game_completed: bool = False
     time_stamp: TimeStamp
@@ -62,4 +62,4 @@ class CompletedGames(beanie.Document):
 
 class CurrentGames(beanie.Document):
     """Contains a list of games current in progress for endpoints."""
-    current_games: list[str] = pydantic.Field(description="list of game IDs")
+    current_games: list = pydantic.Field(description="list of game IDs")

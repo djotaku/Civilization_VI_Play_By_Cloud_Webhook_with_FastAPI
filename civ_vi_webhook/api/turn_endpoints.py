@@ -42,7 +42,7 @@ def get_average_time(turn_deltas: list) -> str:
     return f"{days} days, {hours} hours, {minutes} min, {seconds:.0f}s."
 
 
-async def create_or_update_game(game_name: str, time_since_last_turn: float, player_id: str,
+async def create_or_update_game(game_name: str, time_since_last_turn: float, player_id,
                                 turn_number: int, turn_time: datetime):
     """Create or update a game in the database."""
     turn_deltas = []
@@ -80,7 +80,7 @@ async def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
     player_name = player.matrix_username or play_by_cloud_game.value2
     api_logger.debug(f"{player_name=} if it's the steam username then either no matrix username or not in database")
     turn_number = play_by_cloud_game.value3
-    player_id = str(player.id)
+    player_id = player.id
     await create_or_update_game(game_name, time_since_last_turn, player_id, turn_number, turn_time)
 
     message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
