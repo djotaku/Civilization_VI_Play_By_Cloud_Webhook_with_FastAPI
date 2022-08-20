@@ -22,3 +22,11 @@ async def get_matrix_name(steam_username: str) -> str:
         return matrix_username
     else:
         return steam_username  # no matrix name found or user not in database
+
+
+async def get_user(steam_username: str) -> User:
+    """Return a user model."""
+    user = await User.find_one(User.steam_username == steam_username)
+    if not user:
+        await create_user(steam_username)
+    return user

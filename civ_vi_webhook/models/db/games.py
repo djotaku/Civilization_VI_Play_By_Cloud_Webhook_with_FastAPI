@@ -21,10 +21,10 @@ class GameInfo(BaseModel):
     turn_number: int
     game_completed: bool = False
     time_stamp: TimeStamp
+    all_players: set
     turn_deltas: Optional[list]
     average_turn_time: Optional[str]
     winner: Optional[str] = pydantic.Field(description="The winner of the game.")
-    all_players = set
 
 
 class Game(beanie.Document):

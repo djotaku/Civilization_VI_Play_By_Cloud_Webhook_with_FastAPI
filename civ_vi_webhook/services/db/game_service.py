@@ -2,11 +2,11 @@ from ...models.db.games import Game, CompletedGames, CurrentGames, GameInfo, Tim
 
 
 async def create_game(game_name: str, player_id: str, turn_number: int, time_stamp: dict, turn_deltas: list,
-                      average_turn_time: str, all_players: set):
+                      average_turn_time: str):
     time_stamp = TimeStamp(year=time_stamp.get("year"), month=time_stamp.get("month"),
                            day=time_stamp.get("day"), hour=time_stamp.get("hour"), minute=time_stamp.get("minute"),
                            second=time_stamp.get("second"))
-    all_players.add(player_id)
+    all_players = {player_id}
     game_info = GameInfo(next_player_id=player_id, turn_number=turn_number, time_stamp=time_stamp,
                          turn_deltas=turn_deltas, average_turn_time=average_turn_time, all_players=all_players)
     game = Game(game_name=game_name, game_info=game_info)
@@ -44,11 +44,12 @@ async def create_completed_games_document():
 
 
 async def update_game(game_name: str, player_id: str, turn_number: int, time_stamp: dict, turn_deltas: list,
-                      average_turn_time: str, all_players: set):
+                      average_turn_time: str):
     game = await Game.find_one(Game.game_name == game_name)
     time_stamp = TimeStamp(year=time_stamp.get("year"), month=time_stamp.get("month"),
                            day=time_stamp.get("day"), hour=time_stamp.get("hour"), minute=time_stamp.get("minute"),
                            second=time_stamp.get("second"))
+    all_players = game.game_info.all_players
     all_players.add(player_id)
     game_info = GameInfo(next_player_id=player_id, turn_number=turn_number, time_stamp=time_stamp,
                          turn_deltas=turn_deltas, average_turn_time=average_turn_time, all_players=all_players)
@@ -57,6 +58,7 @@ async def update_game(game_name: str, player_id: str, turn_number: int, time_sta
 
 
 async def add_game_to_finished_games(game_id: str):
+    # TODO: also remove it from CurrentGames
     completed_games = await CompletedGames.find_one()
     if not completed_games:
         await create_completed_games_document()
