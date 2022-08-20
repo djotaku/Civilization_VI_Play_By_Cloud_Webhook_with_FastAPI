@@ -7,9 +7,10 @@ from starlette import status
 
 from civ_vi_webhook import api_logger
 from civ_vi_webhook.dependencies import (figure_out_base_sixty,
-                                         figure_out_days, load_player_names)
+                                         figure_out_days)
 from civ_vi_webhook.models.turns import CivTurnInfo, PYDTTurnInfo
 from civ_vi_webhook.services.matrix import matrix_bot_sender as matrix_bot
+from civ_vi_webhook.services.db import user_service
 
 from ..dependencies import load_most_recent_games
 
@@ -19,18 +20,6 @@ router = APIRouter(tags=['Turn Endpoints'])
 # Services
 # ##########
 api_matrix_bot = matrix_bot.MatrixBot()
-
-player_name_conversions = load_player_names()
-
-
-def player_name_to_matrix_name(player_name: str) -> str:
-    if not player_name_conversions:
-        return player_name
-    api_logger.debug("player_name_conversions exists")
-    if player_name not in player_name_conversions['matrix'].keys():
-        return player_name
-    api_logger.debug(f"player name is found in the dictionary keys. It is {player_name}")
-    return player_name_conversions['matrix'][player_name]
 
 
 def turn_delta(games: dict, this_game: str, current_time: datetime) -> float:
@@ -56,7 +45,7 @@ def get_average_time(turn_deltas: list) -> str:
 
 
 @router.post('/webhook', status_code=status.HTTP_201_CREATED)
-def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
+async def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
     """The API endpoint for Civilization's Play By Cloud JSON data.
 
     The reason for the duplication checks here are in case more than one player has the webhook enabled for all turns.
@@ -68,7 +57,8 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
     api_logger.debug(f'JSON from Play By Cloud: {play_by_cloud_game}')
     game_name = play_by_cloud_game.value1
     time_since_last_turn = turn_delta(current_games, game_name, turn_time)
-    player_name = player_name_to_matrix_name(play_by_cloud_game.value2)
+    player_name = await user_service.get_matrix_name(play_by_cloud_game.value2)
+    api_logger.debug(f"{player_name=} if it's the steam username then either no matrix username or not in database")
     turn_number = play_by_cloud_game.value3
     turn_deltas = []
     if game_name in current_games.keys():
@@ -76,7 +66,7 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
             if previous_deltas := current_games[game_name].get('turn_deltas'):
                 turn_deltas = list(previous_deltas)
             turn_deltas.append(time_since_last_turn)
-            api_logger.debug("Game exists, but this is not a duplicate")
+            api_logger.debug("Game exists and this is *not* a duplicate")
             send_message = True
         elif current_games[game_name]['turn_number'] != turn_number:
             api_logger.debug("A turn in a two-player game was somehow missed.")
@@ -102,7 +92,8 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
                                     'turn_deltas': turn_deltas,
                                     'average_turn_time': average_turn_time}
         message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
-        api_matrix_bot.main(message)
+        # api_matrix_bot.main(message)  # no longer what we want to do because this is async method now
+        await api_matrix_bot.send_message(message)
         with open('most_recent_games.json', 'w') as most_recent_games_file:
             json.dump(current_games, most_recent_games_file)
     return fastapi.responses.JSONResponse(status_code=status.HTTP_201_CREATED,
@@ -110,16 +101,17 @@ def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
 
 
 @router.post('/pydt', status_code=status.HTTP_201_CREATED)
-def handle_pydt_json(pydt_game: PYDTTurnInfo):
+async def handle_pydt_json(pydt_game: PYDTTurnInfo):
     api_logger.debug(f'JSON from PYDT: {pydt_game}')
     game_name = pydt_game.gameName
-    player_name = player_name_to_matrix_name(pydt_game.userName)
+    player_name = await user_service.get_matrix_name(pydt_game.userName)
+    api_logger.debug(f"{player_name=} if it's the steam username then either no matrix username or not in database")
     turn_number = pydt_game.round
     civ_name = pydt_game.civName
     leader_name = pydt_game.leaderName
     message = f"Hey, {player_name}, {leader_name} is waiting for you to command {civ_name} in {game_name}. " \
               f"The game is on turn {turn_number}"
-    api_matrix_bot.main(message)
+    await api_matrix_bot.send_message(message)
     turn_time = datetime.now()
     current_games = load_most_recent_games()
     turn_deltas = []
