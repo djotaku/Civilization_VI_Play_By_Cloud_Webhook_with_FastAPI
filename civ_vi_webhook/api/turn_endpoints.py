@@ -8,7 +8,7 @@ from starlette import status
 from civ_vi_webhook import api_logger
 from civ_vi_webhook.dependencies import (figure_out_base_sixty,
                                          figure_out_days)
-from civ_vi_webhook.models.turns import CivTurnInfo, PYDTTurnInfo
+from civ_vi_webhook.models.api.turns import CivTurnInfo, PYDTTurnInfo
 from civ_vi_webhook.services.matrix import matrix_bot_sender as matrix_bot
 from civ_vi_webhook.services.db import user_service
 

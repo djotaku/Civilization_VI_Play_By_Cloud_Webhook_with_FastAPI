@@ -8,7 +8,7 @@ import jinja_partials
 from starlette.templating import Jinja2Templates
 
 from civ_vi_webhook import api_logger
-from civ_vi_webhook.models import games
+from civ_vi_webhook.models.api import games
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
