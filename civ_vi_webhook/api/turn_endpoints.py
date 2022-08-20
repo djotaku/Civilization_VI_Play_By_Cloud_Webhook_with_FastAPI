@@ -92,7 +92,6 @@ async def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
                                     'turn_deltas': turn_deltas,
                                     'average_turn_time': average_turn_time}
         message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
-        # api_matrix_bot.main(message)  # no longer what we want to do because this is async method now
         await api_matrix_bot.send_message(message)
         with open('most_recent_games.json', 'w') as most_recent_games_file:
             json.dump(current_games, most_recent_games_file)
