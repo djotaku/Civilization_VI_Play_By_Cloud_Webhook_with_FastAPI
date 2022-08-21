@@ -11,7 +11,8 @@ async def connect_db():
     # replace civ_vi_webhook with the name of the database you want, or leave it if you're OK with this name
     await mongo_setup.init_db('civ_vi_webhook',
                               username=credentials.get("username"),
-                              password=credentials.get("password"))
+                              password=credentials.get("password"),
+                              dev_server=credentials.get("development_server"))
 
 
 async def create_players():

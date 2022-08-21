@@ -31,4 +31,5 @@ async def load_db():
         credentials = json.load(creds)
     await mongo_setup.init_db('civ_vi_webhook',
                               username=credentials.get("username"),
-                              password=credentials.get("password"))
+                              password=credentials.get("password"),
+                              dev_server=credentials.get("development_server"))
