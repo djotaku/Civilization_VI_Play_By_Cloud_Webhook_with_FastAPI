@@ -42,3 +42,8 @@ async def get_index_name_by_user_id(user_id) -> str:
     """Return the index name by user_id"""
     user = await User.find_one(User.id == user_id)
     return user.index_name
+
+
+async def get_all_index_names() -> list[str]:
+    users = await User.find().to_list()
+    return [user.index_name for user in users if user.index_name is not None]

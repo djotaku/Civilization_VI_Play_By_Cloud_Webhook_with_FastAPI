@@ -120,7 +120,7 @@ def format_year_to_number(time_stamp: dict) -> int:
         f"{time_stamp['year']}{time_stamp['month']:0>2d}{time_stamp['day']:0>2d}{time_stamp['hour']:0>2d}{time_stamp['minute']:0>2d}{time_stamp['second']:0>2d}")
 
 
-async def db_model_to_game_model(these_games):
+async def db_model_to_game_model_multiple(these_games):
     games_to_return = []
     for game in these_games:
         time_stamp = games.TimeStamp(year=game.game_info.time_stamp.year,
