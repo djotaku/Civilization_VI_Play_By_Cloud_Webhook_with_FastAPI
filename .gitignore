@@ -134,3 +134,4 @@ matrix.conf
 .idea/
 /most_recent_games.json
 next_batch
+creds.conf

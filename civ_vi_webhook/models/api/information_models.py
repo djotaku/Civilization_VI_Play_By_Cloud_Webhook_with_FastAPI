@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from civ_vi_webhook.models.games import Game
+from civ_vi_webhook.models.api.games import Game
 
 
 class CurrentGames(BaseModel):

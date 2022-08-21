@@ -12,20 +12,20 @@
     <tbody>
     {% for game in completed_games %}
         <tr>
-            <td>{{ game }}</td>
-            <td>{{ completed_games[game]['player_name'] }}</td>
-            <td>{{ completed_games[game]['turn_number'] }}</td>
-            <td>{{ completed_games[game]['time_stamp']['month'] }}-
-                {{ completed_games[game]['time_stamp']['day'] }}-
-                {{ completed_games[game]['time_stamp']['year'] }}
-                {{ completed_games[game]['time_stamp']['hour'] }}:
-                {{ completed_games[game]['time_stamp']['minute'] }}</td>
-            <td>{{ completed_games[game].get('average_turn_time') }}</td>
-            {% if completed_games[game].get('winner') %}
-                <td>{{ completed_games[game].get('winner') }}</td>
+            <td>{{ game.get('game_name') }}</td>
+            <td>{{ game.get('player_name')}}</td>
+            <td>{{ game.get('turn_number') }}</td>
+            <td>{{ game.get('time_stamp').get('month') }}-
+                {{ game.get('time_stamp').get('day') }}-
+                {{ game.get('time_stamp').get('year') }}
+                {{ game.get('time_stamp').get('hour') }}:
+                {{ game.get('time_stamp').get('minute') }}</td>
+            <td>{{ game.get('average_turn_time') }}</td>
+            {% if game.get('winner') %}
+                <td>{{ game.get('winner') }}</td>
             {% else %}
                 <td>
-                <form hx-put="/set_winner?game={{ game }}" hx-swap="none">
+                <form hx-put="/set_winner?game={{ game.get('game_name') }}" hx-swap="none">
                     <div class="field has-addons">
                         <div class="control is-expanded">
                             <div class="select is-fullwidth">

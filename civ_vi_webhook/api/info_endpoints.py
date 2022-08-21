@@ -3,44 +3,57 @@ from typing import Optional
 import fastapi.responses
 from fastapi import APIRouter, Query
 
-from ..dependencies import (dict_to_game_model, load_most_recent_games,
-                            sort_games)
-from ..models import information_models
+from ..dependencies import db_model_to_game_model_multiple
+from ..models.api import information_models
+from ..services.db import game_service, user_service
 
 router = APIRouter(tags=['Information Endpoints'])
 
 
 @router.get('/current_games', response_model=information_models.CurrentGames)
-def return_current_games(player_to_blame: Optional[str] = Query(None,
-                                                                title="Player to Blame",
-                                                                description="To see how many games outstanding.")):
-    """Returns the dictionary containing the games awaiting a turn.
+async def return_current_games(player_to_blame: Optional[str] = Query(None,
+                                                                      title="Player to Blame",
+                                                                      description="To see how many games outstanding.")):
+    """Returns the dictionary containing all the games awaiting a turn.
 
     If a player name is passed, it will return the games that player has outstanding.
 
     Otherwise, it will return a list of all the games outstanding.
     """
-    current_games = load_most_recent_games()
     if player_to_blame:
-        does_player_exist = any(
-            player_to_blame in current_games[games].get('player_name')
-            for games in current_games.keys())
-
-        if does_player_exist:
-            return {"games": [dict_to_game_model({game: game_attributes})
-                              for (game, game_attributes) in current_games.items()
-                              if current_games[game].get('player_name') == player_to_blame]}
+        player_id = await user_service.get_user_id_from_matrix_username(player_to_blame)
+        if player_id:
+            current_games = await game_service.get_current_games(player_id)
         else:
             return fastapi.responses.JSONResponse(status_code=404,
                                                   content={"error": f"{player_to_blame} does not exist"})
-    all_games = [dict_to_game_model({game: game_attributes}) for (game, game_attributes) in current_games.items()]
-    return {"games": all_games}
+    else:
+        current_games = await game_service.get_current_games()
+    games_to_return = await db_model_to_game_model_multiple(current_games)
+    return {"games": games_to_return}
+
+
+@router.get('/completed_games', response_model=information_models.CurrentGames)
+async def return_completed_games():
+    completed_games = await game_service.get_completed_games()
+    games_to_return = await db_model_to_game_model_multiple(completed_games)
+    print(games_to_return)
+    return {"games": games_to_return}
+
+
+@router.get('/all_games', response_model=information_models.CurrentGames)
+async def get_all_games():
+    all_games = await game_service.get_all_games()
+    games_to_return = await db_model_to_game_model_multiple(all_games)
+    return {"games": games_to_return}
 
 
 @router.get('/total_number_of_games', response_model=information_models.GameCounts)
-def return_total_number_of_games():
+async def return_total_number_of_games():
     """Returns the total number of games the API knows about."""
-    all_games = load_most_recent_games()
-    completed_games, current_games = sort_games()
-    return {'total_games': len(all_games), 'current_games': len(current_games),
-            "completed_games": len(completed_games)}
+    total_games = await game_service.get_total_game_count()
+    current_games = await game_service.get_current_games_count()
+    completed_games = await game_service.get_completed_games_count()
+    return {'total_games': total_games, 'current_games': current_games,
+            "completed_games": completed_games}
+

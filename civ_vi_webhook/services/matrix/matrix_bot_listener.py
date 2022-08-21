@@ -8,6 +8,7 @@ import requests
 from nio import AsyncClient
 
 from civ_vi_webhook.dependencies import determine_time_delta
+from ..db import matrix_service
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(asctime)s - %(message)s')
 
@@ -165,12 +166,10 @@ class ListenerMatrixBot:
 
     async def main(self):
         my_client = await self.login()
-        with open('next_batch', 'r') as next_batch_token:
-            my_client.next_batch = next_batch_token.read()
+        my_client.next_batch = await matrix_service.get_next_batch()
         while True:
             sync_response = await my_client.sync(30000)
-            with open('next_batch', 'w') as next_batch_token:
-                next_batch_token.write(sync_response.next_batch)
+            await matrix_service.write_next_batch(sync_response.next_batch)
             if len(sync_response.rooms.join) > 0:
                 joins = sync_response.rooms.join
                 for room_id in joins:

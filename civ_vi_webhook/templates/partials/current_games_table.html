@@ -1,26 +1,32 @@
 <table class="table is-striped sortable" hx-get="/current_games_table" hx-trigger="every 2s" id="current_table">
-                <thead>
-                <tr>
-                    <th>Game</th>
-                    <th>Next Player</th>
-                    <th>Turn Number</th>
-                    <th>Last Turn Date/Time</th>
-                    <th>Average Turn Time</th>
-                    <th>Mark as Completed?</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for game in current_games %}
-                    <tr>
-                        <td>{{ game }}</td>
-                        <td>{{ current_games[game]['player_name'] }}</td>
-                        <td>{{ current_games[game]['turn_number'] }}</td>
-                        <td>{{ current_games[game]['time_stamp']['month'] }}-{{ current_games[game]['time_stamp']['day'] }}-{{ current_games[game]['time_stamp']['year'] }}
-                            {{ current_games[game]['time_stamp']['hour'] }}:
-                            {{ current_games[game]['time_stamp']['minute'] }}</td>
-                        <td>{{ current_games[game].get('average_turn_time') }}</td>
-                        <td><button class="button is-primary" hx-put="/complete_game?game_to_complete={{game}}" hx-trigger="click" hx-swap="none">Mark Completed</button></td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+    <thead>
+    <tr>
+        <th>Game</th>
+        <th>Next Player</th>
+        <th>Turn Number</th>
+        <th>Last Turn Date/Time</th>
+        <th>Average Turn Time</th>
+        <th>Mark as Completed?</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for game in current_games %}
+        <tr>
+            <td>{{ game.get('game_name') }}</td>
+            <td>{{ game.get('player_name') }}</td>
+            <td>{{ game.get('turn_number') }}</td>
+            <td>{{ game.get('time_stamp').get('month') }}-
+                {{ game.get('time_stamp').get('day') }}-
+                {{ game.get('time_stamp').get('year') }}
+                {{ game.get('time_stamp').get('hour') }}:
+                {{ game.get('time_stamp').get('minute') }}</td>
+            <td>{{ game.get('average_turn_time') }}</td>
+            <td>
+                <button class="button is-primary" hx-put="/complete_game?game_to_complete={{ game.get('game_name') }}" hx-trigger="click"
+                        hx-swap="none">Mark Completed
+                </button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
