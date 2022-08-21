@@ -36,7 +36,10 @@ async def db_models_to_dictionary(games) -> list[dict]:
 
 async def get_games_for_index() -> (list, list):
     current_games_raw = await game_service.get_current_games()
-    current_games = await db_models_to_dictionary(current_games_raw)
+    if current_games_raw:
+        current_games = await db_models_to_dictionary(current_games_raw)
+    else:
+        current_games = []
     completed_games_raw = await game_service.get_completed_games()
     completed_games = await db_models_to_dictionary(completed_games_raw)
     return completed_games, current_games

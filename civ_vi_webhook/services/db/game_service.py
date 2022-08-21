@@ -1,3 +1,5 @@
+from typing import Optional
+
 from ...models.db.games import Game, CompletedGames, CurrentGames, GameInfo, TimeStamp
 from beanie.operators import In
 
@@ -50,11 +52,10 @@ async def remove_game_from_current_games(game_id):
     await current_games.save()
 
 
-async def get_current_games(player_id: str = None) -> list[Game]:
+async def get_current_games(player_id: str = None) -> Optional[list[Game]]:
     """Get the current games (perhaps waiting on a specific player)."""
     current_games_document = await CurrentGames.find_one()
     games = await Game.find(In(Game.id, current_games_document.current_games)).to_list()
-
     return [game for game in games if str(game.game_info.next_player_id) == player_id] if player_id else games
 
 

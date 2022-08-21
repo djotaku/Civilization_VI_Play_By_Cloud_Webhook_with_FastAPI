@@ -57,7 +57,7 @@ class Game(beanie.Document):
 
 class CompletedGames(beanie.Document):
     """Contains a list of all completed games for endpoints."""
-    completed_games: list[str] = pydantic.Field(description="list of game IDs")
+    completed_games: list = pydantic.Field(description="list of game IDs")
 
 
 class CurrentGames(beanie.Document):
