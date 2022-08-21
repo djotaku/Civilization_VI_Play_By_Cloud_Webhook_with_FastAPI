@@ -32,10 +32,10 @@ async def get_user(steam_username: str) -> User:
     return user
 
 
-async def get_user_id_from_matrix_username(matrix_username: str) -> str:
+async def get_user_id_from_matrix_username(matrix_username: str):
     """Return the user id as a string based on the matrix_username."""
     user = await User.find_one(User.matrix_username == matrix_username)
-    return str(user.id) if user else ""
+    return user.id if user else None
 
 
 async def get_index_name_by_user_id(user_id) -> str:

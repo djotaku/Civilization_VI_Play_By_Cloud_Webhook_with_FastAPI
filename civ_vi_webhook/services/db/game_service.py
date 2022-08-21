@@ -56,7 +56,7 @@ async def get_current_games(player_id: str = None) -> Optional[list[Game]]:
     """Get the current games (perhaps waiting on a specific player)."""
     current_games_document = await CurrentGames.find_one()
     games = await Game.find(In(Game.id, current_games_document.current_games)).to_list()
-    return [game for game in games if str(game.game_info.next_player_id) == player_id] if player_id else games
+    return [game for game in games if game.game_info.next_player_id == player_id] if player_id else games
 
 
 async def create_completed_games_document(initial_game_id=None):
