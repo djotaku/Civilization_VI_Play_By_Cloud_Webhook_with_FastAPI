@@ -3,7 +3,7 @@ from fastapi import APIRouter, Query, Request, status
 
 from civ_vi_webhook import api_logger
 
-from ..dependencies import load_most_recent_games, db_model_to_game_model
+from ..dependencies import db_model_to_game_model
 from ..models.api.action_models import CompletedGame, DeletedGame, Error
 
 from ..services.db import game_service
@@ -50,7 +50,6 @@ async def set_winner(request: Request,
                      ):
     form_data = await request.form()
     winner = form_data['Winner']
-    current_games = load_most_recent_games()
     game_exists = await game_service.check_for_game(game)
     if not game_exists:
         return fastapi.responses.JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
