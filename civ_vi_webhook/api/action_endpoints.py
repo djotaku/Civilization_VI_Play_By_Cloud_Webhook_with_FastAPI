@@ -1,15 +1,12 @@
-import json
-
 import fastapi.responses
 from fastapi import APIRouter, Query, Request, status
 
 from civ_vi_webhook import api_logger
 
-from ..dependencies import dict_to_game_model, load_most_recent_games
+from ..dependencies import load_most_recent_games, db_model_to_game_model
 from ..models.api.action_models import CompletedGame, DeletedGame, Error
-from ..models.api import games
 
-from ..services.db import game_service, user_service
+from ..services.db import game_service
 
 router = APIRouter(tags=['Action Endpoints'])
 
@@ -44,23 +41,6 @@ async def complete_game(game_to_complete: str = Query(None,
     api_logger.debug(f"Marked game: {game_to_complete} as completed.")
     completed_response = await db_model_to_game_model(game_to_complete)
     return {"completed_game": completed_response}
-
-
-async def db_model_to_game_model(game_to_complete):
-    game = await game_service.get_game(game_to_complete)
-    time_stamp = games.TimeStamp(year=game.game_info.time_stamp.year,
-                                 month=game.game_info.time_stamp.month,
-                                 day=game.game_info.time_stamp.day,
-                                 hour=game.game_info.time_stamp.hour,
-                                 minute=game.game_info.time_stamp.minute,
-                                 second=game.game_info.time_stamp.second)
-    player_name = await user_service.get_index_name_by_user_id(game.game_info.next_player_id)
-    game_info = games.GameInfo(player_name=player_name, turn_number=game.game_info.turn_number,
-                               game_completed=game.game_info.game_completed, time_stamp=time_stamp,
-                               turn_deltas=game.game_info.turn_deltas,
-                               average_turn_time=game.game_info.average_turn_time,
-                               winner=game.game_info.winner)
-    return games.Game(game_name=game.game_name, game_info=game_info)
 
 
 @router.put('/set_winner', status_code=status.HTTP_200_OK, responses={status.HTTP_404_NOT_FOUND: {"model": Error}})

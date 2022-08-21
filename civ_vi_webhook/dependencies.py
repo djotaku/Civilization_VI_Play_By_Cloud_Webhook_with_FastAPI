@@ -9,7 +9,7 @@ from starlette.templating import Jinja2Templates
 
 from civ_vi_webhook import api_logger
 from civ_vi_webhook.models.api import games
-from civ_vi_webhook.services.db import user_service
+from civ_vi_webhook.services.db import user_service, game_service
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
@@ -138,3 +138,20 @@ async def db_model_to_game_model_multiple(these_games):
         this_game = games.Game(game_name=game.game_name, game_info=game_info)
         games_to_return.append(this_game)
     return games_to_return
+
+
+async def db_model_to_game_model(game_to_complete):
+    game = await game_service.get_game(game_to_complete)
+    time_stamp = games.TimeStamp(year=game.game_info.time_stamp.year,
+                                 month=game.game_info.time_stamp.month,
+                                 day=game.game_info.time_stamp.day,
+                                 hour=game.game_info.time_stamp.hour,
+                                 minute=game.game_info.time_stamp.minute,
+                                 second=game.game_info.time_stamp.second)
+    player_name = await user_service.get_index_name_by_user_id(game.game_info.next_player_id)
+    game_info = games.GameInfo(player_name=player_name, turn_number=game.game_info.turn_number,
+                               game_completed=game.game_info.game_completed, time_stamp=time_stamp,
+                               turn_deltas=game.game_info.turn_deltas,
+                               average_turn_time=game.game_info.average_turn_time,
+                               winner=game.game_info.winner)
+    return games.Game(game_name=game.game_name, game_info=game_info)
