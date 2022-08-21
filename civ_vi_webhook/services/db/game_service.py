@@ -127,8 +127,11 @@ async def get_completed_games_count() -> int:
 async def get_completed_games() -> list[Game]:
     """Get the current games (perhaps waiting on a specific player)."""
     completed_games_document = await CompletedGames.find_one()
-    games = await Game.find(In(Game.id, completed_games_document.completed_games)).to_list()
-    return games
+    if completed_games_document:
+        games = await Game.find(In(Game.id, completed_games_document.completed_games)).to_list()
+        return games
+    else:
+        return []
 
 
 async def get_all_games() -> list[Game]:
