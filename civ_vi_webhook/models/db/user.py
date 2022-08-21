@@ -1,7 +1,8 @@
 import beanie
+from typing import Optional
 
 
 class User(beanie.Document):
     steam_username: str
-    matrix_username: str | None
-    index_name: str | None
+    matrix_username: Optional[str]
+    index_name: Optional[str]
