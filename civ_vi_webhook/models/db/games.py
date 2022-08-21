@@ -35,11 +35,11 @@ class Game(beanie.Document):
 
     class Collection:
         name = "games"
-        indexes = [
-            pymongo.IndexModel([("Game.game_info.time_stamp.second", pymongo.DESCENDING),
-                                ],
-                               name="last_turn_date_descend")
-        ]
+        indexes = ["game_name",
+                   pymongo.IndexModel([("game_info.time_stamp.second", pymongo.DESCENDING),
+                                       ],
+                                      name="last_turn_date_descend")
+                   ]
 
     class Config:
         schema_extra = {
