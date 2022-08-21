@@ -33,7 +33,7 @@ class Game(beanie.Document):
     game_name: str
     game_info: GameInfo
 
-    # class Settings:
+    # class Collection:
     #    name = "games"
     #    indexes = [
     #        pymongo.IndexModel( [("game_info.time_stamp.year", pymongo.DESCENDING),
