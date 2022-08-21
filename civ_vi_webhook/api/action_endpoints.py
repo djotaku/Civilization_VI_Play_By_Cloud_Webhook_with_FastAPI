@@ -55,5 +55,5 @@ async def set_winner(request: Request,
         return fastapi.responses.JSONResponse(status_code=status.HTTP_404_NOT_FOUND,
                                               content={"error": f"Game: {game} not found."})
     await game_service.add_winner_to_game(game, winner)
-    winner_response = db_model_to_game_model(game)
+    winner_response = await db_model_to_game_model(game)
     return {"winner_set": winner_response}
