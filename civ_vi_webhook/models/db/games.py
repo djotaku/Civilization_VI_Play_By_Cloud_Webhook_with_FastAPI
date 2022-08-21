@@ -1,9 +1,11 @@
-import beanie
 from typing import Optional
 
+import beanie
 import pydantic
+# import pymongo
 from beanie import PydanticObjectId
 from pydantic import BaseModel
+
 
 class TimeStamp(BaseModel):
     """A Timestamp for a turn"""
@@ -30,6 +32,19 @@ class GameInfo(BaseModel):
 class Game(beanie.Document):
     game_name: str
     game_info: GameInfo
+
+    # class Settings:
+    #    name = "games"
+    #    indexes = [
+    #        pymongo.IndexModel( [("game_info.time_stamp.year", pymongo.DESCENDING),
+    #                             ("game_info.time_stamp.month", pymongo.DESCENDING),
+    #                             ("game_info.time_stamp.day", pymongo.DESCENDING),
+    #                             ("game_info.time_stamp.hour", pymongo.DESCENDING),
+    #                             ("game_info.time_stamp.minute", pymongo.DESCENDING),
+    #                             ("game_info.time_stamp.second", pymongo.DESCENDING),
+    #                             ],
+    #                            name="last-turn_date_descend")
+    #    ]
 
     class Config:
         schema_extra = {

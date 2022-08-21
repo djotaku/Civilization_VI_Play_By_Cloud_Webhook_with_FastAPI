@@ -17,7 +17,7 @@ class CivTurnInfo(BaseModel):
         schema_extra = {
             "example": {
                 "value1": "Eric's Barbarian Clash Game",
-                "value2": "Eric",
+                "value2": "TheDJOtaku",
                 "value3": "300",
             }
         }
@@ -38,10 +38,10 @@ class PYDTTurnInfo(CivTurnInfo):
         schema_extra = {
             "example": {
                 "value1": "Eric's Barbarian Clash Game",
-                "value2": "Eric",
+                "value2": "TheDJOtaku",
                 "value3": "300",
                 "gameName": "Eric's Barbarian Clash Game",
-                "userName": "Eric",
+                "userName": "TheDJOtaku",
                 "round": 300,
                 "civName": "Sumeria",
                 "leaderName": "Gilgamesh"
