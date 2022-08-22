@@ -2,7 +2,7 @@ from typing import Optional
 
 import beanie
 import pydantic
-# import pymongo
+import pymongo
 from beanie import PydanticObjectId
 from pydantic import BaseModel
 
@@ -33,18 +33,14 @@ class Game(beanie.Document):
     game_name: str
     game_info: GameInfo
 
-    # class Collection:
-    #    name = "games"
-    #    indexes = [
-    #        pymongo.IndexModel( [("game_info.time_stamp.year", pymongo.DESCENDING),
-    #                             ("game_info.time_stamp.month", pymongo.DESCENDING),
-    #                             ("game_info.time_stamp.day", pymongo.DESCENDING),
-    #                             ("game_info.time_stamp.hour", pymongo.DESCENDING),
-    #                             ("game_info.time_stamp.minute", pymongo.DESCENDING),
-    #                             ("game_info.time_stamp.second", pymongo.DESCENDING),
-    #                             ],
-    #                            name="last-turn_date_descend")
-    #    ]
+    # db.source_collection.copyTo("target_collection") at the database may be the way to move games over
+    class Settings:
+        name = "games"
+        indexes = ["game_name",
+                   pymongo.IndexModel([("game_info.time_stamp.second", pymongo.DESCENDING),
+                                       ],
+                                      name="last_turn_date_descend")
+                   ]
 
     class Config:
         schema_extra = {
