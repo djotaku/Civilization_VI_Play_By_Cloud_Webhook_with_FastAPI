@@ -9,8 +9,18 @@ from nio import AsyncClient
 
 from civ_vi_webhook.dependencies import determine_time_delta
 from ..db import matrix_service
+from ...models.db import mongo_setup
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(asctime)s - %(message)s')
+
+
+async def load_db():
+    with open("creds.conf", "r") as creds:
+        credentials = json.load(creds)
+    await mongo_setup.init_db('civ_vi_webhook',
+                              username=credentials.get("username"),
+                              password=credentials.get("password"),
+                              dev_server=credentials.get("development_server"))
 
 
 class ListenerMatrixBot:
@@ -25,6 +35,7 @@ class ListenerMatrixBot:
                 self.url = self.config.get('webhook_url')
         except FileNotFoundError:
             logging.warning("Settings not found.")
+        await load_db()
 
     async def login(self):
         client = AsyncClient(self.config.get('server'), self.config.get('username'))
