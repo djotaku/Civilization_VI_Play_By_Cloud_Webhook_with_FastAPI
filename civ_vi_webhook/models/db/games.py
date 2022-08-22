@@ -33,7 +33,8 @@ class Game(beanie.Document):
     game_name: str
     game_info: GameInfo
 
-    class Collection:
+    # db.source_collection.copyTo("target_collection") at the database may be the way to move games over
+    class Settings:
         name = "games"
         indexes = ["game_name",
                    pymongo.IndexModel([("game_info.time_stamp.second", pymongo.DESCENDING),
