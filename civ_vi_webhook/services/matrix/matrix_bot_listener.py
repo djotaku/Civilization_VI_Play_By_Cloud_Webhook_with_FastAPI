@@ -35,7 +35,6 @@ class ListenerMatrixBot:
                 self.url = self.config.get('webhook_url')
         except FileNotFoundError:
             logging.warning("Settings not found.")
-        await load_db()
 
     async def login(self):
         client = AsyncClient(self.config.get('server'), self.config.get('username'))
@@ -176,6 +175,7 @@ class ListenerMatrixBot:
             return "Sorry, I didn't recognize that command. Try !Civ_Bot help to see command list."
 
     async def main(self):
+        await load_db()
         my_client = await self.login()
         my_client.next_batch = await matrix_service.get_next_batch()
         while True:
