@@ -1,6 +1,6 @@
 <div id="tables">
     <section class="section">
-        <div class="container has-text-centered">
+        <div class="container has-text-centered" hx-get="/current_games_table" hx-trigger="every 2s">
 
             <h1 class="title">Current Games</h1>
             {{ render_partial('partials/current_games_table.html', current_games=current_games) }}
@@ -9,7 +9,7 @@
     </section>
     {% if completed_games %}
     <section class="section">
-        <div class="container has-text-centered">
+        <div class="container has-text-centered" hx-get="/completed_games_table" hx-trigger="every 15s">
 
             <h1 class="title">Completed Games</h1>
             (<em>Refreshes every 15 seconds - including to update Winner selection</em>)
