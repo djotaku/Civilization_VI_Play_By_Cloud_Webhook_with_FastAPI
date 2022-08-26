@@ -2,10 +2,10 @@ import fastapi.responses
 from fastapi import APIRouter
 from starlette.requests import Request
 
-from ..dependencies import sort_games, templates, db_model_to_game_model_multiple
-from ..services.db import user_service, game_service
+from ..dependencies import templates
+from ..services.db import game_service, user_service
 
-router = APIRouter(tags=['index'])
+router = APIRouter(tags=['index'], include_in_schema=False)
 
 
 async def get_potential_winners_list() -> list:
