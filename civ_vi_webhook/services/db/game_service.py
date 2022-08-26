@@ -1,7 +1,10 @@
+from datetime import datetime
+
 from typing import Optional
 
 from ...models.db.games import Game, CompletedGames, CurrentGames, GameInfo, TimeStamp
 from beanie.operators import In
+from civ_vi_webhook import api_logger
 
 
 async def create_game(game_name: str, player_id, turn_number: int, time_stamp: dict, turn_deltas: list,
@@ -55,8 +58,7 @@ async def remove_game_from_current_games(game_id):
 async def get_current_games(player_id: str = None) -> Optional[list[Game]]:
     """Get the current games (perhaps waiting on a specific player)."""
     current_games_document = await CurrentGames.find_one()
-    games = await Game.find(In(Game.id, current_games_document.current_games)).sort('last_turn_date_descend').to_list()
-    # print(games)
+    games = await Game.find(In(Game.id, current_games_document.current_games)).sort('time_stamp').to_list()
     return [game for game in games if game.game_info.next_player_id == player_id] if player_id else games
 
 
@@ -131,9 +133,17 @@ async def get_completed_games() -> list[Game]:
     completed_games_document = await CompletedGames.find_one()
     if completed_games_document:
         games = await Game.find(In(Game.id, completed_games_document.completed_games)).to_list()
+        print(games)
         return games
     else:
         return []
+
+
+async def remove_game_from_completed_games(game_id):
+    """Remove a game ID from the completed games"""
+    completed_games = await CompletedGames.find_one()
+    completed_games.completed_games.remove(game_id)
+    await completed_games.save()
 
 
 async def get_all_games() -> list[Game]:
@@ -144,9 +154,15 @@ async def get_all_games() -> list[Game]:
 async def delete_game(game_name: str) -> bool:
     """Delete a game from the database"""
     game_exists = await check_for_game(game_name)
-    if game_exists:
-        game_to_delete = await Game.find_one(Game.game_name == game_name)
-        await game_to_delete.delete()
-        return True
-    else:
+    if not game_exists:
         return False
+    api_logger.debug("Game found, about to delete.")
+    game_to_delete = await Game.find_one(Game.game_name == game_name)
+    if game_to_delete.game_info.game_completed:
+        api_logger.debug("Game had been marked as completed, removing from that list.")
+        await remove_game_from_completed_games(game_to_delete.id)
+    else:
+        api_logger.debug("Game was not completed, removing from current games list.")
+        await remove_game_from_current_games(game_to_delete.id)
+    await game_to_delete.delete()
+    return True
