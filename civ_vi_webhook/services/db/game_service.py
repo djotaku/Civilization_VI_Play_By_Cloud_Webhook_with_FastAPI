@@ -2,18 +2,15 @@ from datetime import datetime
 
 from typing import Optional
 
-from ...models.db.games import Game, CompletedGames, CurrentGames, GameInfo, TimeStamp
+from ...models.db.games import Game, CompletedGames, CurrentGames, GameInfo
 from beanie.operators import In
 from civ_vi_webhook import api_logger
 
 
-async def create_game(game_name: str, player_id, turn_number: int, time_stamp: dict, turn_deltas: list,
+async def create_game(game_name: str, player_id, turn_number: int, time_stamp: datetime, turn_deltas: list,
                       average_turn_time: str):
-    time_stamp = TimeStamp(year=time_stamp.get("year"), month=time_stamp.get("month"),
-                           day=time_stamp.get("day"), hour=time_stamp.get("hour"), minute=time_stamp.get("minute"),
-                           second=time_stamp.get("second"))
     all_players = {player_id}
-    game_info = GameInfo(next_player_id=player_id, turn_number=turn_number, time_stamp=time_stamp,
+    game_info = GameInfo(next_player_id=player_id, turn_number=turn_number, time_stamp_v2=time_stamp,
                          turn_deltas=turn_deltas, average_turn_time=average_turn_time, all_players=all_players)
     game = Game(game_name=game_name, game_info=game_info)
     await game.save()
@@ -71,15 +68,12 @@ async def create_completed_games_document(initial_game_id=None):
     await completed_games.save()
 
 
-async def update_game(game_name: str, player_id, turn_number: int, time_stamp: dict, turn_deltas: list,
+async def update_game(game_name: str, player_id, turn_number: int, time_stamp: datetime, turn_deltas: list,
                       average_turn_time: str):
     game = await Game.find_one(Game.game_name == game_name)
-    time_stamp = TimeStamp(year=time_stamp.get("year"), month=time_stamp.get("month"),
-                           day=time_stamp.get("day"), hour=time_stamp.get("hour"), minute=time_stamp.get("minute"),
-                           second=time_stamp.get("second"))
     all_players = game.game_info.all_players
     all_players.add(player_id)
-    game_info = GameInfo(next_player_id=player_id, turn_number=turn_number, time_stamp=time_stamp,
+    game_info = GameInfo(next_player_id=player_id, turn_number=turn_number, time_stamp_v2=time_stamp,
                          turn_deltas=turn_deltas, average_turn_time=average_turn_time, all_players=all_players)
     game.game_info = game_info
     await game.save()

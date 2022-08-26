@@ -13,8 +13,8 @@ router = APIRouter(tags=['Action Endpoints'])
 
 @router.delete('/delete_game', status_code=status.HTTP_200_OK, response_model=DeletedGame)
 async def delete_game(game_to_delete: str = Query(None,
-                                            title="Game to Delete",
-                                            description="The name of the game to delete")):
+                                                  title="Game to Delete",
+                                                  description="The name of the game to delete")):
     """Delete the game passed to this endpoint."""
     game_exists = await game_service.check_for_game(game_to_delete)
     if not game_exists:
@@ -30,8 +30,8 @@ async def delete_game(game_to_delete: str = Query(None,
 @router.put('/complete_game', status_code=status.HTTP_200_OK, response_model=CompletedGame,
             responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
 async def complete_game(game_to_complete: str = Query(None,
-                                                title="Game to Mark as Completed",
-                                                description="The name of the game to mark as completed")):
+                                                      title="Game to Mark as Completed",
+                                                      description="The name of the game to mark as completed")):
     """Mark as completed the game passed to this endpoint."""
     game_exists = await game_service.check_for_game(game_to_complete)
     if not game_exists:
