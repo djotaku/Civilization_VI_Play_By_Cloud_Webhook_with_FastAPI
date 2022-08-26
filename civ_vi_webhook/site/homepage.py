@@ -78,6 +78,7 @@ async def get_both_games_tables(request: Request, game_to_complete: Optional[str
 
     This is so that when a game is marked as completed, it re-renders both tables to make them seem interactive.
     """
+    print(f"Called both tables put with {game_to_complete=}")
     completed_games, current_games = await get_games_for_index()
     potential_winners = await get_potential_winners_list()
     if game_to_complete is not None:
