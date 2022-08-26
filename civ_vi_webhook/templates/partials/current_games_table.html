@@ -22,8 +22,8 @@
                 {{ game.get('time_stamp').get('minute') }}</td>
             <td>{{ game.get('average_turn_time') }}</td>
             <td>
-                <button class="button is-primary" hx-put="/both_tables?game_to_complete={{ game.get('game_name') }}" hx-trigger="click"
-                        hx-target="#tables">Mark Completed
+                <button class="button is-primary" hx-put="/both_tables?game_to_complete={{ game.get('game_name') }}"
+                        hx-trigger="click" hx-target="#tables">Mark Completed
                 </button>
             </td>
         </tr>
