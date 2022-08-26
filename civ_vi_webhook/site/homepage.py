@@ -60,6 +60,17 @@ def favicon():
     return fastapi.responses.RedirectResponse(url="/static/favicon.ico")
 
 
+@router.put('/both_tables')
+async def get_both_games_tables(request: Request, game_to_complete: str):
+    completed_games, current_games = await get_games_for_index()
+    potential_winners = await get_potential_winners_list()
+    await game_service.mark_game_completed(game_to_complete)
+    return templates.TemplateResponse('partials/both_tables.html', {'request': request,
+                                                                    "current_games": current_games,
+                                                                    "completed_games": completed_games,
+                                                                    "potential_winners": potential_winners})
+
+
 @router.get('/current_games_table')
 async def get_current_games_table(request: Request):
     completed_games, current_games = await get_games_for_index()
