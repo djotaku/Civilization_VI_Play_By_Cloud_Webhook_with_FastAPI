@@ -17,14 +17,7 @@ class CurrentGames(BaseModel):
                             "player_name": "Eric",
                             "turn_number": 300,
                             "game_completed": False,
-                            "time_stamp": {
-                                "year": 2022,
-                                "month": 7,
-                                "day": 21,
-                                "hour": 20,
-                                "minute": 33,
-                                "second": 28
-                            }
+                            "time_stamp": "08-26-2022 16:24:40"
                         }
                     },
                     {
