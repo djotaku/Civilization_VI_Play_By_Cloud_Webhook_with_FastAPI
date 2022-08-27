@@ -1,23 +1,8 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<section class="section">
-    <div class="container has-text-centered">
-        <p>
-        <h1 class="title">Current Games</h1>
-        {{ render_partial('partials/current_games_table.html', current_games=current_games) }}
-        </p>
-    </div>
-</section>
-{% if completed_games %}
-<section class="section">
-    <div class="container has-text-centered">
-        <p>
-        <h1 class="title">Completed Games</h1>
-        (<em>Refreshes every 15 seconds - including to update Winner selection</em>)
-        {{ render_partial('partials/completed_games_table.html', completed_games=completed_games, potential_winners=potential_winners) }}
-        </p>
-    </div>
-</section>
-{% endif %}
+
+
+    {{ render_partial('partials/both_tables.html', current_games=current_games, completed_games=completed_games,potential_winners=potential_winners) }}
+
 {% endblock %}
