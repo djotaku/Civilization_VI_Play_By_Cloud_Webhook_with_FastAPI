@@ -1,13 +1,12 @@
-<div id="tables">
-    <section class="section">
-        <div class="container has-text-centered">
+<section class="section">
+    <div class="container has-text-centered">
 
-            <h1 class="title">Current Games</h1>
-            {{ render_partial('partials/current_games_table.html', current_games=current_games) }}
+        <h1 class="title">Current Games</h1>
+        {{ render_partial('partials/current_games_table.html', current_games=current_games) }}
 
-        </div>
-    </section>
-    {% if completed_games %}
+    </div>
+</section>
+{% if completed_games %}
     <section class="section">
         <div class="container has-text-centered">
 
@@ -17,5 +16,4 @@
 
         </div>
     </section>
-    {% endif %}
-</div>
+{% endif %}

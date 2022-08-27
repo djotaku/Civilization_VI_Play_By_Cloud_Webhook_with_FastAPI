@@ -1,4 +1,4 @@
-<table class="table is-striped sortable" id="current_table" hx-get="/current_games_table" hx-trigger="every 2s">
+<table class="table is-striped sortable" id="current_table">
     <thead>
     <tr>
         <th>Game</th>
@@ -26,3 +26,5 @@
     {% endfor %}
     </tbody>
 </table>
+<button class="button is-primary" hx-put="/both_tables"
+                        hx-trigger="click" hx-target="#tables">Test Button </button>
