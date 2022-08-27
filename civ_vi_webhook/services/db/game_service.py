@@ -128,7 +128,7 @@ async def get_completed_games() -> list[Game]:
     completed_games_document = await CompletedGames.find_one()
     if completed_games_document:
         games = await Game.find(In(Game.id, completed_games_document.completed_games)).to_list()
-        print(games)
+        # print(games)
         return games
     else:
         return []
