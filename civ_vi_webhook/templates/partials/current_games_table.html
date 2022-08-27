@@ -1,4 +1,4 @@
-<table class="table is-striped sortable" hx-get="/current_games_table" hx-trigger="every 2s" id="current_table">
+<table class="table is-striped sortable" id="current_table" hx-get="/current_games_table" hx-trigger="every 2s">
     <thead>
     <tr>
         <th>Game</th>
@@ -22,8 +22,8 @@
                 {{ game.get('time_stamp').get('minute') }}</td>
             <td>{{ game.get('average_turn_time') }}</td>
             <td>
-                <button class="button is-primary" hx-put="/complete_game?game_to_complete={{ game.get('game_name') }}" hx-trigger="click"
-                        hx-swap="none">Mark Completed
+                <button class="button is-primary" hx-put="/both_tables?game_to_complete={{ game.get('game_name') }}"
+                        hx-trigger="click" hx-target="#tables">Mark Completed
                 </button>
             </td>
         </tr>

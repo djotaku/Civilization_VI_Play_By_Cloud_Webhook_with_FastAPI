@@ -5,7 +5,6 @@ from civ_vi_webhook import api_logger
 
 from ..dependencies import db_model_to_game_model
 from ..models.api.action_models import CompletedGame, DeletedGame, Error
-
 from ..services.db import game_service
 
 router = APIRouter(tags=['Action Endpoints'])
