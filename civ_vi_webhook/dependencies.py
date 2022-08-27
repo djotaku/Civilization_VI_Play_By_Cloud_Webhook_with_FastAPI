@@ -30,20 +30,13 @@ def figure_out_days(number: int) -> (int, int):
 async def db_model_to_game_model_multiple(these_games: list[db_games]) -> list[games]:
     games_to_return = []
     for game in these_games:
-        time_stamp = game.game_info.time_stamp_v2.strftime('%m-%d-%Y %H:%M:%S')
-        player_name = await user_service.get_index_name_by_user_id(game.game_info.next_player_id)
-        game_info = games.GameInfo(player_name=player_name, turn_number=game.game_info.turn_number,
-                                   game_completed=game.game_info.game_completed, time_stamp=time_stamp,
-                                   turn_deltas=game.game_info.turn_deltas,
-                                   average_turn_time=game.game_info.average_turn_time,
-                                   winner=game.game_info.winner)
+        game_info = await create_api_game_info(game)
         this_game = games.Game(game_name=game.game_name, game_info=game_info)
         games_to_return.append(this_game)
     return games_to_return
 
 
-async def db_model_to_game_model(game_to_complete):
-    game = await game_service.get_game(game_to_complete)
+async def create_api_game_info(game):
     time_stamp = game.game_info.time_stamp_v2.strftime('%m-%d-%Y %H:%M:%S')
     player_name = await user_service.get_index_name_by_user_id(game.game_info.next_player_id)
     game_info = games.GameInfo(player_name=player_name, turn_number=game.game_info.turn_number,
@@ -51,4 +44,10 @@ async def db_model_to_game_model(game_to_complete):
                                turn_deltas=game.game_info.turn_deltas,
                                average_turn_time=game.game_info.average_turn_time,
                                winner=game.game_info.winner)
+    return game_info
+
+
+async def db_model_to_game_model(game_to_complete):
+    game = await game_service.get_game(game_to_complete)
+    game_info = await create_api_game_info(game)
     return games.Game(game_name=game.game_name, game_info=game_info)
