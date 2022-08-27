@@ -15,11 +15,7 @@
             <td>{{ game.get('game_name') }}</td>
             <td>{{ game.get('player_name') }}</td>
             <td>{{ game.get('turn_number') }}</td>
-            <td>{{ game.get('time_stamp').get('month') }}-
-                {{ game.get('time_stamp').get('day') }}-
-                {{ game.get('time_stamp').get('year') }}
-                {{ game.get('time_stamp').get('hour') }}:
-                {{ game.get('time_stamp').get('minute') }}</td>
+            <td>{{ game.get('time_stamp') }}</td>
             <td>{{ game.get('average_turn_time') }}</td>
             <td>
                 <button class="button is-primary" hx-put="/both_tables?game_to_complete={{ game.get('game_name') }}"

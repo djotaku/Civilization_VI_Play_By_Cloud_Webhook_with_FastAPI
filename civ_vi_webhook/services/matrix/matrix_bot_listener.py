@@ -3,13 +3,15 @@
 import asyncio
 import json
 import logging
+from datetime import datetime
 
 import requests
 from nio import AsyncClient
 
-from civ_vi_webhook.dependencies import determine_time_delta
-from ..db import matrix_service
+from civ_vi_webhook.dependencies import figure_out_base_sixty, figure_out_days
+
 from ...models.db import mongo_setup
+from ..db import matrix_service
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(asctime)s - %(message)s')
 
@@ -21,6 +23,17 @@ async def load_db():
                               username=credentials.get("username"),
                               password=credentials.get("password"),
                               dev_server=credentials.get("development_server"))
+
+
+def return_time(time_difference) -> (int, int, int, int):
+    """Return time in a useful manner."""
+    days = time_difference.days
+    seconds = time_difference.seconds
+    minutes, seconds = figure_out_base_sixty(seconds)
+    hours, minutes = figure_out_base_sixty(minutes)
+    days_plus, hours = figure_out_days(hours)
+    days += days_plus
+    return days, hours, minutes, seconds
 
 
 class ListenerMatrixBot:
@@ -67,13 +80,13 @@ class ListenerMatrixBot:
             turn_number = game['game_info'].get('turn_number')
             return_text += f"{game_name} awaiting turn {turn_number} by {player}. "
             if game['game_info'].get('time_stamp'):
-                time_text = determine_time_delta(game['game_info']['time_stamp']['year'],
-                                                 game['game_info']['time_stamp']['month'],
-                                                 game['game_info']['time_stamp']['day'],
-                                                 game['game_info']['time_stamp']['hour'],
-                                                 game['game_info']['time_stamp']['minute'],
-                                                 game['game_info']['time_stamp']['second'])
-                return_text += time_text
+                time_of_question = datetime.now()
+                time_of_turn = datetime.strptime(game['game_info'].get('time_stamp'),
+                                                 '%m-%d-%Y %H:%M:%S')
+                difference = time_of_question - time_of_turn
+                days, hours, minutes, seconds = return_time(difference)
+                return_text += f"It's been {days} days {hours} hours {minutes} minutes {seconds} seconds since the " \
+                               f"last turn. "
             return_text += '\n'
         return return_text
 

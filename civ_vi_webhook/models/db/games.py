@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 import beanie
@@ -22,7 +23,8 @@ class GameInfo(BaseModel):
     next_player_id: PydanticObjectId = pydantic.Field(description="The MongoDB ID of the player whose turn it now is.")
     turn_number: int
     game_completed: bool = False
-    time_stamp: TimeStamp
+    time_stamp: Optional[TimeStamp]
+    time_stamp_v2: Optional[datetime]
     all_players: set
     turn_deltas: Optional[list]
     average_turn_time: Optional[str]
@@ -41,29 +43,6 @@ class Game(beanie.Document):
                                        ],
                                       name="last_turn_date_descend")
                    ]
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "game_name": "Eric's Barbarian Clash Game",
-                "game_info": {
-                    "player_name": "Eric",
-                    "turn_number": 300,
-                    "game_completed": False,
-                    "time_stamp": {
-                        "year": 2022,
-                        "month": 7,
-                        "day": 21,
-                        "hour": 20,
-                        "minute": 33,
-                        "second": 28
-                    },
-                    "turn_deltas": [24, 6677, 34],
-                    "average_turn_time": "0 days, 0 hours, 4 min, 12s.",
-                    "winner": "Eric"
-                }
-            }
-        }
 
 
 class CompletedGames(beanie.Document):

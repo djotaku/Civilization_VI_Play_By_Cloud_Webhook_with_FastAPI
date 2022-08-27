@@ -21,14 +21,10 @@ api_matrix_bot = matrix_bot.MatrixBot()
 
 
 async def turn_delta(this_game: str, current_time: datetime) -> float:
+    """Compute the time delta between the last turn and this turn."""
     if await game_service.check_for_game(this_game):
         game = await game_service.get_game(this_game)
-        last_turn = datetime(game.game_info.time_stamp.year,
-                             game.game_info.time_stamp.month,
-                             game.game_info.time_stamp.day,
-                             game.game_info.time_stamp.hour,
-                             game.game_info.time_stamp.minute,
-                             game.game_info.time_stamp.second)
+        last_turn = game.game_info.time_stamp_v2
         return (current_time - last_turn).total_seconds()
     else:
         return 0
@@ -47,21 +43,19 @@ async def create_or_update_game(game_name: str, time_since_last_turn: float, pla
     """Create or update a game in the database."""
     turn_deltas = []
     continuing_game: bool = await game_service.check_for_game(game_name)
-    time_stamp = {'year': turn_time.year, 'month': turn_time.month, 'day': turn_time.day,
-                  'hour': turn_time.hour, 'minute': turn_time.minute, 'second': turn_time.second}
     if continuing_game:
         game = await game_service.get_game(game_name)
         turn_deltas = game.game_info.turn_deltas
         turn_deltas.append(time_since_last_turn)
         average_turn_time = get_average_time(turn_deltas)
         await game_service.update_game(game_name=game_name, player_id=player_id, turn_number=turn_number,
-                                       time_stamp=time_stamp, turn_deltas=turn_deltas,
+                                       time_stamp=turn_time, turn_deltas=turn_deltas,
                                        average_turn_time=average_turn_time)
     else:
         turn_deltas.append(time_since_last_turn)
         average_turn_time = get_average_time(turn_deltas)
         await game_service.create_game(game_name=game_name, player_id=player_id, turn_number=turn_number,
-                                       time_stamp=time_stamp, turn_deltas=turn_deltas,
+                                       time_stamp=turn_time, turn_deltas=turn_deltas,
                                        average_turn_time=average_turn_time)
 
 
@@ -82,7 +76,6 @@ async def handle_play_by_cloud_json(play_by_cloud_game: CivTurnInfo):
     turn_number = play_by_cloud_game.value3
     player_id = player.id
     await create_or_update_game(game_name, time_since_last_turn, player_id, turn_number, turn_time)
-
     message = f"Hey, {player_name}, it's your turn in {game_name}. The game is on turn {turn_number}"
     await api_matrix_bot.send_message(message)
     return fastapi.responses.JSONResponse(status_code=status.HTTP_201_CREATED,

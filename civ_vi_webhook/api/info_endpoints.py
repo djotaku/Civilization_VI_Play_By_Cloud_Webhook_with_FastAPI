@@ -37,7 +37,6 @@ async def return_current_games(player_to_blame: Optional[str] = Query(None,
 async def return_completed_games():
     completed_games = await game_service.get_completed_games()
     games_to_return = await db_model_to_game_model_multiple(completed_games)
-    print(games_to_return)
     return {"games": games_to_return}
 
 
@@ -56,4 +55,3 @@ async def return_total_number_of_games():
     completed_games = await game_service.get_completed_games_count()
     return {'total_games': total_games, 'current_games': current_games,
             "completed_games": completed_games}
-
