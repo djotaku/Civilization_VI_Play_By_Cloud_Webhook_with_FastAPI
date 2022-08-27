@@ -1,4 +1,3 @@
-import json
 import math
 from datetime import datetime
 from pathlib import Path
@@ -6,24 +5,12 @@ from pathlib import Path
 import jinja_partials
 from starlette.templating import Jinja2Templates
 
-from civ_vi_webhook import api_logger
 from civ_vi_webhook.models.api import games
 from civ_vi_webhook.services.db import game_service, user_service
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
 jinja_partials.register_starlette_extensions(templates)
-
-
-def load_player_names() -> dict:
-    """If player names have been defined, load them in."""
-    try:
-        with open('player_names.conf', 'r') as file:
-            player_names = json.load(file)
-            api_logger.debug("Player Conversion file loaded.")
-    except FileNotFoundError:
-        api_logger.warning("No Player Conversion file loaded. Messages will use Steam account names.")
-    return player_names
 
 
 def dict_to_game_model(dictionary: dict) -> games.Game:
