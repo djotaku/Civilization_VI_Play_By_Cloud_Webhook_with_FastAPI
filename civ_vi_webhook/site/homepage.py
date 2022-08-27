@@ -21,12 +21,7 @@ async def db_models_to_dictionary(games) -> list[dict]:
     """Convert a game from a DB Model to a dictionary for use by Jinja2"""
     games_to_return = []
     for game in games:
-        time_stamp = {"year": game.game_info.time_stamp.year,
-                      "month": game.game_info.time_stamp.month,
-                      "day": game.game_info.time_stamp.day,
-                      "hour": game.game_info.time_stamp.hour,
-                      "minute": game.game_info.time_stamp.minute,
-                      "second": game.game_info.time_stamp.second}
+        time_stamp = game.game_info.time_stamp_v2.strftime('%m-%d-%Y %H:%M:%S')
         player_name = await user_service.get_index_name_by_user_id(game.game_info.next_player_id)
         this_game = {"game_name": game.game_name, "player_name": player_name,
                      "average_turn_time": game.game_info.average_turn_time,

@@ -1,10 +1,11 @@
 from datetime import datetime
-
 from typing import Optional
 
-from ...models.db.games import Game, CompletedGames, CurrentGames, GameInfo
 from beanie.operators import In
+
 from civ_vi_webhook import api_logger
+
+from ...models.db.games import CompletedGames, CurrentGames, Game, GameInfo
 
 
 async def create_game(game_name: str, player_id, turn_number: int, time_stamp: datetime, turn_deltas: list,
@@ -19,7 +20,7 @@ async def create_game(game_name: str, player_id, turn_number: int, time_stamp: d
 
 async def check_for_game(game_name: str) -> bool:
     """Check if the game already exists."""
-    return bool(game := await Game.find_one(Game.game_name == game_name))
+    return bool(await Game.find_one(Game.game_name == game_name))
 
 
 async def get_game(game_name: str) -> Game:
@@ -162,4 +163,16 @@ async def delete_game(game_name: str) -> bool:
     return True
 
 
-# TODO: add utility to add time_stamp_v2 to all the old games
+async def convert_to_new_time_stamp():
+    """Convert from the old, dict time_stamp to the new datetime time_stamp_v2"""
+    games = await Game.find().to_list()
+    for game in games:
+        if game.game_info.time_stamp:
+            time_stamp = datetime(game.game_info.time_stamp.year,
+                                  game.game_info.time_stamp.month,
+                                  game.game_info.time_stamp.day,
+                                  game.game_info.time_stamp.hour,
+                                  game.game_info.time_stamp.minute,
+                                  game.game_info.time_stamp.second)
+            game.game_info.time_stamp_v2 = time_stamp
+        await game.save()
