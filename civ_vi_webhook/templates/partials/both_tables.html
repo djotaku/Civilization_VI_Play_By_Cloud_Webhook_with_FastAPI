@@ -11,7 +11,6 @@
         <div class="container has-text-centered">
 
             <h1 class="title">Completed Games</h1>
-            (<em>Refreshes every 15 seconds - including to update Winner selection</em>)
             {{ render_partial('partials/completed_games_table.html', completed_games=completed_games, potential_winners=potential_winners) }}
 
         </div>
