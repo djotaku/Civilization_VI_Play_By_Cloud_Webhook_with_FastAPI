@@ -1,8 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
-
-
-    {{ render_partial('partials/both_tables.html', current_games=current_games, completed_games=completed_games,potential_winners=potential_winners) }}
-
+    <div id="tables">
+        {{ render_partial('partials/both_tables.html', current_games=current_games, completed_games=completed_games,potential_winners=potential_winners) }}
+    </div>
 {% endblock %}

@@ -1,4 +1,4 @@
-<table class="table is-striped sortable" id="completed_table" hx-get="/completed_games_table" hx-trigger="every 15s">
+<table class="table is-striped sortable" id="completed_table">
     <thead>
     <tr>
         <th>Game</th>
@@ -21,7 +21,7 @@
                 <td>{{ game.get('winner') }}</td>
             {% else %}
                 <td>
-                <form hx-put="/set_winner?game={{ game.get('game_name') }}" hx-swap="none">
+                <form hx-put="/completed_games_table?game={{ game.get('game_name') }}" hx-target="#completed_table">
                     <div class="field has-addons">
                         <div class="control is-expanded">
                             <div class="select is-fullwidth">

@@ -73,11 +73,10 @@ async def get_both_games_tables(request: Request, game_to_complete: Optional[str
 
     This is so that when a game is marked as completed, it re-renders both tables to make them seem interactive.
     """
-    print(f"Called both tables put with {game_to_complete=}")
-    completed_games, current_games = await get_games_for_index()
-    potential_winners = await get_potential_winners_list()
     if game_to_complete is not None:
         await game_service.mark_game_completed(game_to_complete)
+    completed_games, current_games = await get_games_for_index()
+    potential_winners = await get_potential_winners_list()
     return templates.TemplateResponse('partials/both_tables.html', {'request': request,
                                                                     "current_games": current_games,
                                                                     "completed_games": completed_games,
@@ -98,12 +97,16 @@ async def get_current_games_table(request: Request):
                                                                             "potential_winners": potential_winners})
 
 
-@router.get('/completed_games_table')
-async def get_completed_games_table(request: Request):
+@router.put('/completed_games_table')
+async def get_completed_games_table(request: Request, game: Optional[str]):
     """Get the games for the completed games table.
 
     This allows us to use HTMX to render changes only to the completed games table.
     """
+    form_data = await request.form()
+    if form_data:
+        winner = form_data['Winner']
+        await game_service.add_winner_to_game(game, winner)
     completed_games, current_games = await get_games_for_index()
     potential_winners = await get_potential_winners_list()
     return templates.TemplateResponse('partials/completed_games_table.html', {'request': request,

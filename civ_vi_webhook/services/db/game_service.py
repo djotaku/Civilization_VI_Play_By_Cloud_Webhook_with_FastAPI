@@ -56,7 +56,7 @@ async def remove_game_from_current_games(game_id):
 async def get_current_games(player_id: str = None) -> Optional[list[Game]]:
     """Get the current games (perhaps waiting on a specific player)."""
     current_games_document = await CurrentGames.find_one()
-    games = await Game.find(In(Game.id, current_games_document.current_games)).sort('time_stamp_v2').to_list()
+    games = await Game.find(In(Game.id, current_games_document.current_games)).sort(Game.game_info.time_stamp_v2).to_list()
     return [game for game in games if game.game_info.next_player_id == player_id] if player_id else games
 
 
@@ -127,8 +127,7 @@ async def get_completed_games() -> list[Game]:
     """Get the current games (perhaps waiting on a specific player)."""
     completed_games_document = await CompletedGames.find_one()
     if completed_games_document:
-        games = await Game.find(In(Game.id, completed_games_document.completed_games)).to_list()
-        # print(games)
+        games = await Game.find(In(Game.id, completed_games_document.completed_games)).sort(Game.game_info.time_stamp_v2).to_list()
         return games
     else:
         return []
