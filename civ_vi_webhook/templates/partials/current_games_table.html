@@ -12,7 +12,7 @@
     <tbody>
     {% for game in current_games %}
         <tr>
-            <td>{{ game.get('game_name') }}</td>
+            <td><a href="/game/{{ game.get('game_name') }}">{{ game.get('game_name') }}</a></td>
             <td>{{ game.get('player_name') }}</td>
             <td>{{ game.get('turn_number') }}</td>
             <td>{{ game.get('time_stamp') }}</td>

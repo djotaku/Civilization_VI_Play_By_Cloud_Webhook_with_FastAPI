@@ -4,44 +4,30 @@ import fastapi.responses
 from fastapi import APIRouter
 from starlette.requests import Request
 
-from ..dependencies import templates
+from ..dependencies import db_game_models_to_dictionary, templates
+from ..models.db.games import Game
 from ..services.db import game_service, user_service
 
 router = APIRouter(tags=['index'], include_in_schema=False)
 
 
-async def get_potential_winners_list() -> list:
+async def get_potential_winners_list() -> list[str]:
     """Get a list of potential selections for winners"""
     winners = await user_service.get_all_index_names()
     winners.extend(("Other Player", "Computer Player"))
     return winners
 
 
-async def db_models_to_dictionary(games) -> list[dict]:
-    """Convert a game from a DB Model to a dictionary for use by Jinja2"""
-    games_to_return = []
-    for game in games:
-        time_stamp = game.game_info.time_stamp_v2.strftime('%m-%d-%Y %H:%M:%S')
-        player_name = await user_service.get_index_name_by_user_id(game.game_info.next_player_id)
-        this_game = {"game_name": game.game_name, "player_name": player_name,
-                     "average_turn_time": game.game_info.average_turn_time,
-                     "winner": game.game_info.winner,
-                     "turn_number": game.game_info.turn_number,
-                     "time_stamp": time_stamp}
-        games_to_return.append(this_game)
-    return games_to_return
-
-
-async def get_games_for_index() -> (list, list):
+async def get_games_for_index() -> (list[Game], list[Game]):
     """Get the completed and current games into a list for the Jinja2 templates."""
     current_games_raw = await game_service.get_current_games()
     if current_games_raw:
-        current_games = await db_models_to_dictionary(current_games_raw)
+        current_games = await db_game_models_to_dictionary(current_games_raw)
     else:
         current_games = []
     completed_games_raw = await game_service.get_completed_games()
     if completed_games_raw:
-        completed_games = await db_models_to_dictionary(completed_games_raw)
+        completed_games = await db_game_models_to_dictionary(completed_games_raw)
     else:
         completed_games = []
     return completed_games, current_games

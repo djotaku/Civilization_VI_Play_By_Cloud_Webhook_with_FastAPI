@@ -6,7 +6,7 @@ from starlette.staticfiles import StaticFiles
 
 from .api import action_endpoints, info_endpoints, turn_endpoints
 from .models.db import mongo_setup
-from .site import homepage
+from .site import game, homepage
 
 app = FastAPI(
     title="Eric's Civilization VI Play By Cloud and PYDT Webhook server",
@@ -23,6 +23,7 @@ app.include_router(turn_endpoints.router)
 app.include_router(info_endpoints.router)
 app.include_router(action_endpoints.router)
 app.include_router(homepage.router)
+app.include_router(game.router)
 
 
 @app.on_event("startup")

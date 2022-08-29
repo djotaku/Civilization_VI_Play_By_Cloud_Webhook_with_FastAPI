@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="section">
+<h1 class="title">{{ game.get("game_name") }}</h1>
+<h2 class="subtitle">Turn: {{ game.get("turn_number") }}</h2>
+</section>
+
+{% endblock %}
