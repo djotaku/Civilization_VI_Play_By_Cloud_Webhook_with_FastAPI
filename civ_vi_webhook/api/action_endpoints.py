@@ -4,10 +4,22 @@ from fastapi import APIRouter, Query, Request, status
 from civ_vi_webhook import api_logger
 
 from ..dependencies import db_model_to_game_model
-from ..models.api.action_models import CompletedGame, DeletedGame, Error
-from ..services.db import game_service
+from ..models.api.action_models import CompletedGame, DeletedGame, Error, User
+from ..models.db.user import User as DbUser
+from ..services.db import game_service, user_service
 
 router = APIRouter(tags=['Action Endpoints'])
+
+
+@router.post('/add_user', status_code=status.HTTP_201_CREATED, response_model=User)
+async def add_user(user: User):
+    """Add a user into the database."""
+    api_logger.debug(user)
+    user = await DbUser.find_one(User.steam_username == user.steam_username)
+    if not user:
+        user = await user_service.create_user(user.steam_username, maxtrix_username=user.matrix_username,
+                                              index_name=user.index_name)
+    return user
 
 
 @router.delete('/delete_game', status_code=status.HTTP_200_OK, response_model=DeletedGame)

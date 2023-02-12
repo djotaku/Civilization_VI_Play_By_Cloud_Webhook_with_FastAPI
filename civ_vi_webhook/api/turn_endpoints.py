@@ -1,4 +1,3 @@
-import json
 from datetime import datetime
 
 import fastapi.responses
@@ -6,11 +5,10 @@ from fastapi import APIRouter
 from starlette import status
 
 from civ_vi_webhook import api_logger
-from civ_vi_webhook.dependencies import (figure_out_base_sixty,
-                                         figure_out_days)
+from civ_vi_webhook.dependencies import figure_out_base_sixty, figure_out_days
 from civ_vi_webhook.models.api.turns import CivTurnInfo, PYDTTurnInfo
+from civ_vi_webhook.services.db import game_service, user_service
 from civ_vi_webhook.services.matrix import matrix_bot_sender as matrix_bot
-from civ_vi_webhook.services.db import user_service, game_service
 
 router = APIRouter(tags=['Turn Endpoints'])
 
@@ -22,12 +20,10 @@ api_matrix_bot = matrix_bot.MatrixBot()
 
 async def turn_delta(this_game: str, current_time: datetime) -> float:
     """Compute the time delta between the last turn and this turn."""
-    if await game_service.check_for_game(this_game):
-        game = await game_service.get_game(this_game)
-        last_turn = game.game_info.time_stamp_v2
-        return (current_time - last_turn).total_seconds()
-    else:
+    if not await game_service.check_for_game(this_game):
         return 0
+    game = await game_service.get_game(this_game)
+    return (current_time - game.game_info.time_stamp_v2).total_seconds()
 
 
 def get_average_time(turn_deltas: list) -> str:
