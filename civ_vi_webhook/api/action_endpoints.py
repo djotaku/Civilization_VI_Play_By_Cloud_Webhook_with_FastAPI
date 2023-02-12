@@ -15,7 +15,7 @@ router = APIRouter(tags=['Action Endpoints'])
 async def add_user(user: User):
     """Add a user into the database."""
     api_logger.debug(user)
-    user = await DbUser.find_one(User.steam_username == user.steam_username)
+    user = await DbUser.find_one(DbUser.steam_username == user.steam_username)
     if not user:
         user = await user_service.create_user(user.steam_username, maxtrix_username=user.matrix_username,
                                               index_name=user.index_name)
