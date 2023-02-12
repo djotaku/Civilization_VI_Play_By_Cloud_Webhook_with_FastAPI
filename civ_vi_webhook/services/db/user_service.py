@@ -26,10 +26,9 @@ async def get_matrix_name(steam_username: str) -> str:
 
 async def get_user(steam_username: str) -> User:
     """Return a user model."""
-    user = await User.find_one(User.steam_username == steam_username)
-    if not user:
-        await create_user(steam_username)
-    return user
+    return await User.find_one(
+        User.steam_username == steam_username
+    ) or await create_user(steam_username)  # don't remember why I have it create one if it's not there
 
 
 async def get_user_id_from_matrix_username(matrix_username: str):

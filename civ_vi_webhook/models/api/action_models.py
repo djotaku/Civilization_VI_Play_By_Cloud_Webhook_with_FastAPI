@@ -1,6 +1,14 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 from .games import Game
+
+
+class User(BaseModel):
+    steam_username: str
+    matrix_username: Optional[str]
+    index_name: Optional[str]
 
 
 class DeletedGame(BaseModel):
