@@ -4,7 +4,7 @@ Using Python FastAPI creates a webhook endpoint for Civilization VI's Play By Cl
 
 I will accept Pull Requests to add other services: eg Discord, Telegram, Email, SMS, Mastodon, etc
 
-For instructions on how to use with Matrix (an open source Slack clone), see the [readme.md in the Maxtrix colder](https://github.com/djotaku/Civilization_VI_Play_By_Cloud_Webhook_with_FastAPI/tree/main/civ_vi_webhook/services/matrix)
+For instructions on how to use with Matrix (an open source Slack clone), see the [readme.md in the Maxtrix folder](https://github.com/djotaku/Civilization_VI_Play_By_Cloud_Webhook_with_FastAPI/tree/main/civ_vi_webhook/services/matrix)
 
 More info below on why I came up with this code, the endpoints, and how to set it up for yourself.
 
@@ -72,7 +72,7 @@ I have switched to using Poetry to develop and run this project.
 
 Pre-requirements
 - poetry (installed via your OS's package manager)
-- nginx or apachie web server
+- nginx or apache web server
 
 On a server running Nginx or Apache, go to the folder that will contain this code. Clone the git repo.
 
@@ -82,7 +82,7 @@ Install the dependencies:
 poetry install
 ```
 
-Copy the sample_matrix.conf file to the main directory of the program. (The same directory with the server and listener bash scripts) Edit the values to match those of a user you have created on the Matrix server to be a bot.
+Copy the [sample_matrix.conf](https://github.com/djotaku/Civilization_VI_Play_By_Cloud_Webhook_with_FastAPI/tree/main/civ_vi_webhook/services/matrix) file to the main directory of the program. (The same directory with the server and listener bash scripts) Edit the values to match those of a user you have created on the Matrix server to be a bot.
 
 Using 2 terminals or a terminal muxer like screen or tmux, use one window for the server script and one for the listener script.
 
