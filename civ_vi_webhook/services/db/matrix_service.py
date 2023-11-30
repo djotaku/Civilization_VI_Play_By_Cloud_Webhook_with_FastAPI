@@ -3,7 +3,9 @@ from ...models.db.matrix import Matrix
 
 async def write_next_batch(next_batch: str):
     """Write the next batch info for the Matrix listener."""
-    matrix = Matrix(next_batch=next_batch)
+    # matrix = Matrix(next_batch=next_batch)
+    matrix = await Matrix.find_one()
+    matrix.next_batch = next_batch
     await matrix.save()
 
 
